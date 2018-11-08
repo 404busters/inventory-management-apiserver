@@ -1,0 +1,14 @@
+# Build Binary
+/apiserver
+
+*.dylib
+*.so
+*.test
+
+# Go vendor
+vendor
+
+# IDE and editor
+.idea
+*.iml
+*~
