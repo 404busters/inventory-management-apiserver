@@ -69,4 +69,11 @@ CREATE TABLE transport_inventory (
   primary key (transport, inventory)
 );
 
+CREATE TABLE inventory_alias (
+  inventory uuid not null references inventory(id) on delete cascade,
+  alias text not null primary key,
+  created_at timestamp without time zone default current_timestamp,
+  updated_at timestamp without time zone default current_timestamp
+);
+
 COMMIT;
