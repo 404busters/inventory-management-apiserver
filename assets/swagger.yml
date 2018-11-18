@@ -44,6 +44,8 @@ paths:
             $ref: "#/definitions/Inventory"
         422:
           description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"
   /location:
     get:
       tags:
@@ -57,6 +59,8 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Location"
+        503:
+          description: "Service Unavailable"
     post:
       tags:
       - "location"  
@@ -74,6 +78,8 @@ paths:
             $ref: "#/definitions/Location"
         422:
           description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"
   /location/{id}:
     get:
       tags:
@@ -92,6 +98,8 @@ paths:
             $ref: "#/definitions/Location"
         422:
           description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"
     put:
       tags:
       - "location"  
@@ -109,6 +117,8 @@ paths:
             $ref: "#/definitions/Location"
         422:
           description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"
     delete:
       tags:
       - "location"  
@@ -124,6 +134,8 @@ paths:
           description: "successful operation"
         422:
           description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"
 definitions:
   Inventory:
     type: "object"
