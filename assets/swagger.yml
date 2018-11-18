@@ -42,8 +42,8 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Inventory"
-        405:
-          description: "Invalid input"
+        422:
+          description: "Unprocessable Entity"
   /location:
     get:
       tags:
@@ -57,6 +57,23 @@ paths:
             type: array
             items:
               $ref: "#/definitions/Location"
+    post:
+      tags:
+      - "location"  
+      produces:
+      - "application/json"
+      parameters:
+        - in: body
+          name: location
+          schema:
+            $ref: "#/definitions/LocationInput"  
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Location"
+        422:
+          description: "Unprocessable Entity"
   /location/{id}:
     get:
       tags:
@@ -73,23 +90,40 @@ paths:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Location"
-        405:
-          description: "Invalid input"
-  /location/create:
-    post:
+        422:
+          description: "Unprocessable Entity"
+    put:
       tags:
       - "location"  
       produces:
       - "application/json"
       parameters:
-      - in: "body"
+        - in: body
+          name: location
+          schema:
+            $ref: "#/definitions/LocationInput"  
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Location"
-        405:
-          description: "Invalid input"
+        422:
+          description: "Unprocessable Entity"
+    delete:
+      tags:
+      - "location"  
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: id
+        type: string
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+        422:
+          description: "Unprocessable Entity"
 definitions:
   Inventory:
     type: "object"
@@ -114,6 +148,11 @@ definitions:
         type: "string"
       name:
         type: "string"
+  LocationInput:
+    type: "object"
+    properties:
+      name:
+        type: "string"
   Tag:
     type: "object"
     properties:
@@ -122,8 +161,6 @@ definitions:
         format: "int64"
       name:
         type: "string"
-    xml:
-      name: "Tag"
   ItemType:
     type: "object"
     required:
@@ -136,8 +173,6 @@ definitions:
         example: "doggie"
       description:
         type: "string"
-    xml:
-      name: "Pet"
   ApiResponse:
     type: "object"
     properties:
