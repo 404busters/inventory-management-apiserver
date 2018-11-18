@@ -23,20 +23,38 @@ schemes:
 - "http"
 paths:
   /inventory:
+    post:
+      tags:
+      - "inventory"
+      produces:
+        - "application/json"
+      consumes:
+        - "application/json"
+      parameters:
+        - in: body
+          name: inventory
+          schema:
+            $ref: "#/definitions/InventoryInput" 
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Inventory"
+        422:
+          description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"     
+  /inventory/{id}:
     get:
       tags:
       - "inventory"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "location"
-        in: "query"
-        required: false
-        type: "string"
-      - name: "itemType"
-        in: "query"
-        required: false
-        type: "string"
+      - in: "path"
+        name: id
+        type: string
+        required: true
       responses:
         200:
           description: "successful operation"
@@ -46,6 +64,42 @@ paths:
           description: "Unprocessable Entity"
         503:
           description: "Service Unavailable"
+    delete:
+      tags:
+      - "inventory"  
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: id
+        type: string
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+        422:
+          description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"
+    put:
+      tags:
+      - "inventory"
+      produces:
+        - "application/json"
+      parameters:
+      - in: "path"
+        name: id
+        type: string
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Inventory"
+        422:
+          description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"          
   /location:
     get:
       tags:
@@ -65,6 +119,8 @@ paths:
       tags:
       - "location"  
       produces:
+      - "application/json"
+      consumes:
       - "application/json"
       parameters:
         - in: body
@@ -106,6 +162,10 @@ paths:
       produces:
       - "application/json"
       parameters:
+        - in: "path"
+          name: id
+          type: string
+          required: true
         - in: body
           name: location
           schema:
@@ -136,12 +196,48 @@ paths:
           description: "Unprocessable Entity"
         503:
           description: "Service Unavailable"
+  /location/{locationId}/inventory:
+    get:
+      tags:
+      - "location"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: locationId
+        type: string
+        required: true
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Inventory"
+        422:
+          description: "Unprocessable Entity"
+        503:
+          description: "Service Unavailable"
 definitions:
   Inventory:
     type: "object"
     properties:
       id:
         type: "string"
+      itemType:
+        type: "string"
+      location:
+        type: "string"
+      status:
+        type: "string"
+        description: "Order Status"
+        enum:
+        - "STOCK"
+        - "IN_USE"
+        - "REPAIR"
+  InventoryInput:
+    type: "object"
+    properties:
       itemType:
         type: "string"
       location:
