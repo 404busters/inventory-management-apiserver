@@ -14,13 +14,25 @@
    limitations under the License.
 */
 
-package graphql
+package inject
 
 import (
 	"context"
-	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
-func CreateHandler(ctx context.Context) http.Handler {
-	return http.HandlerFunc(http.NotFound)
+var LoggerKey contextKey
+
+func BindLoggerToContext(ctx context.Context, logger logrus.FieldLogger) context.Context {
+	return withValue(ctx, LoggerKey, logger)
+}
+
+func GetLoggerFromContext(ctx context.Context) logrus.FieldLogger {
+	val := ctx.Value(ConnectorKey)
+	if logger, ok := val.(logrus.FieldLogger); ok {
+		return logger
+	}
+
+	return nil
 }

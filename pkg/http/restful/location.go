@@ -14,13 +14,25 @@
    limitations under the License.
 */
 
-package graphql
+package restful
 
 import (
-	"context"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
+	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
 
-func CreateHandler(ctx context.Context) http.Handler {
-	return http.HandlerFunc(http.NotFound)
+type locationHandler struct {
+	Service core.LocationService
+	Logger  logrus.FieldLogger
+}
+
+func (h *locationHandler) list(c *gin.Context) {
+	locations, err := h.Service.List(c)
+	if err != nil {
+		c.Status(http.StatusServiceUnavailable)
+	} else {
+		c.PureJSON(http.StatusOK, locations)
+	}
 }

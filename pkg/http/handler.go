@@ -17,7 +17,10 @@
 package http
 
 import (
+	"context"
 	"net/http"
+	"os"
+	"strings"
 
 	"github.com/gorilla/handlers"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/http/graphql"
@@ -25,13 +28,32 @@ import (
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/logging"
 )
 
+type contextBinder func(ctx context.Context) context.Context
+
+var allowedHost = strings.Split(os.Getenv("CORS_ALLOWED_HOST"), ",")
+
 func CreateHandler() (h http.Handler) {
+	ctx := context.Background()
+
+	binders := []contextBinder{
+		bindLogger,
+		bindService,
+	}
+
+	for _, binder := range binders {
+		ctx = binder(ctx)
+	}
+
 	mux := http.NewServeMux()
-	mux.Handle("/graphql", graphql.CreateHandler())
-	mux.Handle("/", restful.CreateHandler())
+	mux.Handle("/graphql", graphql.CreateHandler(ctx))
+	mux.Handle("/", restful.CreateHandler(ctx))
 
 	h = mux
 	h = handlers.CombinedLoggingHandler(logging.GetRoot().Writer(), h)
+	h = handlers.CORS(
+		handlers.AllowedOrigins(allowedHost),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"}),
+	)(h)
 
 	return
 }

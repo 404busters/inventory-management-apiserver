@@ -14,13 +14,23 @@
    limitations under the License.
 */
 
-package graphql
+package core
 
-import (
-	"context"
-	"net/http"
-)
+import "context"
 
-func CreateHandler(ctx context.Context) http.Handler {
-	return http.HandlerFunc(http.NotFound)
+type Location struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
+type LocationInput struct {
+	Name string `json:"name"`
+}
+
+type LocationService interface {
+	List(ctx context.Context) ([]Location, error)
+	Get(ctx context.Context, id string) (*Location, error)
+	Create(ctx context.Context, input *LocationInput) (*Location, error)
+	Update(ctx context.Context, id string, input *LocationInput) (*Location, error)
+	Delete(ctx context.Context, id string) error
 }

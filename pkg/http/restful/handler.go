@@ -16,9 +16,26 @@
 
 package restful
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
-func CreateHandler() http.Handler {
+func CreateHandler(ctx context.Context) http.Handler {
+	//engine := gin.New()
+	//v1 := engine.Group("/api/v1")
+	//
+	//logger := inject.GetLoggerFromContext(ctx)
+	//
+	//{
+	//	service := inject.GetLocationServiceFromContext(ctx)
+	//	handler := locationHandler{
+	//		Service: service,
+	//		Logger:  logger.WithField("controller", "location"),
+	//	}
+	//	v1.GET("/location", handler.list)
+	//}
+
 	// TODO: Replace with returning gin.Engine
 	return http.HandlerFunc(http.NotFound)
 }

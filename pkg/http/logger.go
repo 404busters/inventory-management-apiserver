@@ -14,13 +14,15 @@
    limitations under the License.
 */
 
-package graphql
+package http
 
 import (
 	"context"
-	"net/http"
+
+	"gitlab.com/404busters/inventory-management/apiserver/pkg/http/inject"
+	"gitlab.com/404busters/inventory-management/apiserver/pkg/logging"
 )
 
-func CreateHandler(ctx context.Context) http.Handler {
-	return http.HandlerFunc(http.NotFound)
+func bindLogger(ctx context.Context) context.Context {
+	return inject.BindLoggerToContext(ctx, logging.GetRoot())
 }
