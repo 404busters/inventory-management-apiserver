@@ -98,7 +98,7 @@ paths:
         422:
           description: "Unprocessable Entity"
         503:
-          description: "Service Unavailable"          
+          description: "Service Unavailable"        
   /location:
     get:
       tags:
