@@ -18,8 +18,7 @@ package main
 
 import (
 	"context"
-	"gitlab.com/404busters/inventory-management/apiserver/pkg/http/graphql"
-	"gitlab.com/404busters/inventory-management/apiserver/pkg/http/restful"
+	appHttp "gitlab.com/404busters/inventory-management/apiserver/pkg/http"
 	"net/http"
 	"os"
 	"os/signal"
@@ -28,17 +27,13 @@ import (
 )
 
 func main() {
-	mux := http.NewServeMux()
-	mux.Handle("/graphql", graphql.CreateHandler())
-	mux.Handle("/", restful.CreateHandler())
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
 	srv := &http.Server{
-		Handler: mux,
+		Handler: appHttp.CreateHandler(),
 		Addr:    ":" + port,
 	}
 
