@@ -19,6 +19,7 @@ package restful
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
@@ -33,6 +34,6 @@ func (h *locationHandler) list(c *gin.Context) {
 	if err != nil {
 		c.Status(http.StatusServiceUnavailable)
 	} else {
-		c.PureJSON(http.StatusOK, locations)
+		c.JSON(http.StatusOK, locations)
 	}
 }
