@@ -4,6 +4,8 @@ ENV CGO_ENABLED 0
 
 WORKDIR /go/apiserver
 
+RUN apk add --no-cache git
+
 COPY . .
 
 RUN go install -v gitlab.com/404busters/inventory-management/apiserver/cmd/apiserver
