@@ -22,14 +22,14 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var LoggerKey contextKey
+var LoggerKey = contextKey{}
 
 func BindLoggerToContext(ctx context.Context, logger logrus.FieldLogger) context.Context {
 	return withValue(ctx, LoggerKey, logger)
 }
 
 func GetLoggerFromContext(ctx context.Context) logrus.FieldLogger {
-	val := ctx.Value(ConnectorKey)
+	val := ctx.Value(LoggerKey)
 	if logger, ok := val.(logrus.FieldLogger); ok {
 		return logger
 	}

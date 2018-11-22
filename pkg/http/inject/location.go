@@ -22,7 +22,7 @@ import (
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
 
-var LocationServiceKey contextKey
+var LocationServiceKey = contextKey{}
 
 func BindLocationServiceToContext(ctx context.Context, service core.LocationService) context.Context {
 	return withValue(ctx, LocationServiceKey, service)
