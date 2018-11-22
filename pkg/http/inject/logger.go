@@ -22,8 +22,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-var LoggerKey = contextKey{}
-
 func BindLoggerToContext(ctx context.Context, logger logrus.FieldLogger) context.Context {
 	return withValue(ctx, LoggerKey, logger)
 }

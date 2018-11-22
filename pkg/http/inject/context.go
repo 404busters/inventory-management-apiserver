@@ -1,8 +1,8 @@
 package inject
 
-import "context"
-
-type contextKey struct{}
+import (
+	"context"
+)
 
 type injectContext struct {
 	context.Context
