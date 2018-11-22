@@ -16,9 +16,26 @@
 
 package restful
 
-import "net/http"
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+)
 
 func CreateHandler() http.Handler {
-	// TODO: Replace with returning gin.Engine
-	return http.HandlerFunc(http.NotFound)
+	app := gin.New()
+	basePath := "/api"
+
+	v1 := app.Group(basePath + "/v1")
+
+	inventory := v1.Group("/inventory")
+	{
+		inventory.GET("/", getInventory)
+	}
+
+	return app
+}
+
+func getInventory(c *gin.Context) {
+	name := c.Param("name")
+	c.String(http.StatusOK, "Hello %s", name)
 }
