@@ -19,23 +19,27 @@ package restful
 import (
 	"context"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"gitlab.com/404busters/inventory-management/apiserver/pkg/http/inject"
 )
 
 func CreateHandler(ctx context.Context) http.Handler {
-	//engine := gin.New()
-	//v1 := engine.Group("/api/v1")
-	//
-	//logger := inject.GetLoggerFromContext(ctx)
-	//
-	//{
-	//	service := inject.GetLocationServiceFromContext(ctx)
-	//	handler := locationHandler{
-	//		Service: service,
-	//		Logger:  logger.WithField("controller", "location"),
-	//	}
-	//	v1.GET("/location", handler.list)
-	//}
+	app := gin.New()
+	basePath := "/api"
 
-	// TODO: Replace with returning gin.Engine
-	return http.HandlerFunc(http.NotFound)
+	v1 := app.Group(basePath + "/v1")
+
+	logger := inject.GetLoggerFromContext(ctx)
+
+	{
+		service := inject.GetLocationServiceFromContext(ctx)
+		handler := locationHandler{
+			Service: service,
+			Logger:  logger.WithField("controller", "location"),
+		}
+		v1.GET("/location", handler.list)
+	}
+
+	return app
 }
