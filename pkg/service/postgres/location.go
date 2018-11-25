@@ -23,7 +23,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 	"gitlab.com/ysitd-cloud/golang-packages/dbutils"
-	"time"
 )
 
 // For static type checking
@@ -97,7 +96,6 @@ func (s *LocationService) Create(ctx context.Context, input *core.LocationInput)
 	defer conn.Close()
 
 	var location core.Location
-	current := time.Now()
 
 	tx, err := conn.BeginTx(ctx, nil)
 
@@ -106,7 +104,7 @@ func (s *LocationService) Create(ctx context.Context, input *core.LocationInput)
 		return nil, err
 	}
 
-	row := tx.QueryRowContext(ctx, "", uuid.NewV4(), input.Name, current, current)
+	row := tx.QueryRowContext(ctx, "INSERT INTO location (id ,name) VALUES ( $1, $2) RETURNING id, name", uuid.NewV4(), input.Name)
 	defer tx.Rollback()
 
 	if err := row.Scan(&location.Id, &location.Name); err != nil {
