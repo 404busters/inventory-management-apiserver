@@ -32,8 +32,13 @@ type locationHandler struct {
 func (h *locationHandler) list(c *gin.Context) {
 	locations, err := h.Service.List(c)
 	if err != nil {
-		c.Status(http.StatusServiceUnavailable)
+		c.JSON(http.StatusServiceUnavailable, ErrorRes{
+			Code:    "database_error",
+			Message: err.Error(),
+		})
 	} else {
-		c.JSON(http.StatusOK, locations)
+		c.JSON(http.StatusOK, ApiRes{
+			Data: locations,
+		})
 	}
 }

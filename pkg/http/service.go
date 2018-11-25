@@ -18,12 +18,12 @@ package http
 
 import (
 	"context"
+	"gitlab.com/404busters/inventory-management/apiserver/pkg/service/postgres"
 	"os"
 
 	_ "github.com/lib/pq"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/http/inject"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/logging"
-	"gitlab.com/404busters/inventory-management/apiserver/pkg/service/mock"
 	"gitlab.com/ysitd-cloud/golang-packages/dbutils"
 )
 
@@ -33,7 +33,7 @@ func bindService(base context.Context) (ctx context.Context) {
 
 	{
 		// TODO Replace with Postgres Service
-		service := &mock.LocationService{Connector: connector, Logger: logger.WithField("service", "location")}
+		service := &postgres.LocationService{Connector: connector, Logger: logger.WithField("service", "location")}
 		ctx = inject.BindLocationServiceToContext(base, service)
 	}
 

@@ -18,7 +18,6 @@ package postgres
 
 import (
 	"context"
-
 	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 	"gitlab.com/ysitd-cloud/golang-packages/dbutils"
@@ -34,12 +33,38 @@ type LocationService struct {
 }
 
 func (s *LocationService) List(ctx context.Context) ([]core.Location, error) {
-	//conn, err := s.Connector.Connect(ctx)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//defer conn.Close()
-	return nil, nil
+	conn, err := s.Connector.Connect(ctx)
+	if err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+	defer conn.Close()
+
+	rows, err := conn.QueryContext(ctx, "SELECT id, name FROM location")
+	if err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var locations = make([]core.Location, 0)
+
+	for rows.Next() {
+		var location core.Location
+		if err := rows.Scan(&location.Id, &location.Name); err != nil {
+			s.Logger.Error(err)
+			return nil, err
+		}
+		locations = append(locations, location)
+		s.Logger.Debug(location)
+	}
+
+	if err := rows.Err(); err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+
+	return locations, nil
 }
 
 func (s *LocationService) Get(ctx context.Context, id string) (*core.Location, error) {
