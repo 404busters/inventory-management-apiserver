@@ -18,9 +18,12 @@ package postgres
 
 import (
 	"context"
+	"database/sql"
+	"github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 	"gitlab.com/ysitd-cloud/golang-packages/dbutils"
+	"time"
 )
 
 // For static type checking
@@ -56,7 +59,6 @@ func (s *LocationService) List(ctx context.Context) ([]core.Location, error) {
 			return nil, err
 		}
 		locations = append(locations, location)
-		s.Logger.Debug(location)
 	}
 
 	if err := rows.Err(); err != nil {
@@ -78,7 +80,7 @@ func (s *LocationService) Get(ctx context.Context, id string) (*core.Location, e
 	var location core.Location
 
 	row := conn.QueryRowContext(ctx, "SELECT id, name FROM location WHERE id = $1", id)
-	if err := row.Scan(&location.Id, &location.Name); err != nil {
+	if err := row.Scan(&location.Id, &location.Name); err == sql.ErrNoRows {
 		s.Logger.Error(err)
 		return nil, err
 	}
@@ -87,7 +89,34 @@ func (s *LocationService) Get(ctx context.Context, id string) (*core.Location, e
 }
 
 func (s *LocationService) Create(ctx context.Context, input *core.LocationInput) (*core.Location, error) {
-	return nil, nil
+	conn, err := s.Connector.Connect(ctx)
+	if err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+	defer conn.Close()
+
+	var location core.Location
+	current := time.Now()
+
+	tx, err := conn.BeginTx(ctx, nil)
+
+	if err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+
+	row := tx.QueryRowContext(ctx, "", uuid.NewV4(), input.Name, current, current)
+	defer tx.Rollback()
+
+	if err := row.Scan(&location.Id, &location.Name); err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+
+	tx.Commit()
+
+	return &location, nil
 }
 
 func (s *LocationService) Update(ctx context.Context, id string, input *core.LocationInput) (*core.Location, error) {

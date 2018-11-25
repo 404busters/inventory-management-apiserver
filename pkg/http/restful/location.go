@@ -57,3 +57,27 @@ func (h *locationHandler) Get(c *gin.Context) {
 		})
 	}
 }
+
+func (h *locationHandler) Create(c *gin.Context) {
+	var locationInput core.LocationInput
+	err := c.ShouldBindJSON(&locationInput)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
+			Code:    "",
+			Message: err.Error(),
+		})
+		return
+	}
+
+	location, err := h.Service.Create(c, &locationInput)
+	if err != nil {
+		c.JSON(http.StatusServiceUnavailable, ErrorRes{
+			Code:    "database_error",
+			Message: err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, ApiRes{
+			Data: location,
+		})
+	}
+}

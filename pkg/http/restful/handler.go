@@ -40,6 +40,7 @@ func CreateHandler(ctx context.Context) http.Handler {
 		}
 		v1.GET("/location", handler.list)
 		v1.GET("/location/:id", handler.Get)
+		v1.POST("/location", handler.Create)
 	}
 
 	return app
