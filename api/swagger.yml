@@ -14,9 +14,6 @@ tags:
 - name: "ItemType"
 - name: "user"
   description: "Operations about user"
-  externalDocs:
-    description: "Find out more about our store"
-    url: "http://swagger.io"
 schemes:
 - "https"
 - "http"
@@ -256,7 +253,7 @@ paths:
               data:
                 type: array
                 items:
-                $ref: "#/definitions/ItemType"
+                  $ref: "#/definitions/ItemType"
         503:
           $ref : "#/definitions/ErrorResponse"
     post:

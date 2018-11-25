@@ -39,6 +39,7 @@ func CreateHandler(ctx context.Context) http.Handler {
 			Logger:  logger.WithField("controller", "location"),
 		}
 		v1.GET("/location", handler.list)
+		v1.GET("/location/:id", handler.Get)
 	}
 
 	return app

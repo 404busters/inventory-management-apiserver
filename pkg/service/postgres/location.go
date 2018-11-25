@@ -68,7 +68,22 @@ func (s *LocationService) List(ctx context.Context) ([]core.Location, error) {
 }
 
 func (s *LocationService) Get(ctx context.Context, id string) (*core.Location, error) {
-	return nil, nil
+	conn, err := s.Connector.Connect(ctx)
+	if err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+	defer conn.Close()
+
+	var location core.Location
+
+	row := conn.QueryRowContext(ctx, "SELECT id, name FROM location WHERE id = $1", id)
+	if err := row.Scan(&location.Id, &location.Name); err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+
+	return &location, nil
 }
 
 func (s *LocationService) Create(ctx context.Context, input *core.LocationInput) (*core.Location, error) {

@@ -42,3 +42,18 @@ func (h *locationHandler) list(c *gin.Context) {
 		})
 	}
 }
+
+func (h *locationHandler) Get(c *gin.Context) {
+	id := c.Param("id")
+	location, err := h.Service.Get(c, id)
+	if err != nil {
+		c.JSON(http.StatusServiceUnavailable, ErrorRes{
+			Code:    "database_error",
+			Message: err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, ApiRes{
+			Data: location,
+		})
+	}
+}
