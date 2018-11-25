@@ -7,8 +7,11 @@ require (
 	github.com/gin-gonic/gin v1.3.0
 	github.com/golang/protobuf v1.2.0 // indirect
 	github.com/gorilla/handlers v1.4.0
+	github.com/gorilla/websocket v1.4.0 // indirect
+	github.com/graphql-go/graphql v0.7.6 // indirect
 	github.com/lib/pq v1.0.0
 	github.com/mattn/go-isatty v0.0.4 // indirect
+	github.com/samsarahq/thunder v0.4.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.2.0
 	github.com/ugorji/go/codec v0.0.0-20181120210156-7d13b37dbec6 // indirect
