@@ -15,5 +15,6 @@ FROM gcr.io/distroless/base
 ENV PORT 8080
 
 COPY --from=builder /go/bin/apiserver /
+COPY assets /assets
 
 CMD ["/apiserver"]

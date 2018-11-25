@@ -46,6 +46,9 @@ func CreateHandler() (h http.Handler) {
 
 	mux := http.NewServeMux()
 	mux.Handle("/graphql", graphql.CreateHandler(ctx))
+	mux.Handle("/graphiql/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "./assets/graphiql/index.html")
+	}))
 	mux.Handle("/", restful.CreateHandler(ctx))
 
 	h = mux

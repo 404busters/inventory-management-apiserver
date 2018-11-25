@@ -19,8 +19,40 @@ package graphql
 import (
 	"context"
 	"net/http"
+
+	"github.com/samsarahq/thunder/graphql"
+	"github.com/samsarahq/thunder/graphql/introspection"
+	"github.com/samsarahq/thunder/graphql/schemabuilder"
+	"gitlab.com/404busters/inventory-management/apiserver/pkg/http/inject"
 )
 
+type graphQLProvider interface {
+	provide(builder *schemabuilder.Schema)
+}
+
 func CreateHandler(ctx context.Context) http.Handler {
-	return http.HandlerFunc(http.NotFound)
+	builder := schemabuilder.NewSchema()
+
+	locationService := inject.GetLocationServiceFromContext(ctx)
+	logger := inject.GetLoggerFromContext(ctx)
+
+	providers := []graphQLProvider{
+		&locationQueryProvider{
+			service: locationService,
+			logger:  logger.WithField("query", "location"),
+		},
+	}
+
+	for _, provider := range providers {
+		provider.provide(builder)
+	}
+
+	schema, err := builder.Build()
+	if err != nil {
+		panic(err)
+	}
+
+	introspection.AddIntrospectionToSchema(schema)
+
+	return graphql.HTTPHandler(schema)
 }
