@@ -32,7 +32,6 @@ func bindService(base context.Context) (ctx context.Context) {
 	logger := logging.GetRoot()
 
 	{
-		// TODO Replace with Postgres Service
 		service := &postgres.LocationService{Connector: connector, Logger: logger.WithField("service", "location")}
 		ctx = inject.BindLocationServiceToContext(base, service)
 	}
