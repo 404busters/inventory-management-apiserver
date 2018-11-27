@@ -134,6 +134,6 @@ func (h *locationHandler) Delete(c *gin.Context) {
 			Message: err.Error(),
 		})
 	} else {
-		c.JSON(http.StatusOK, nil)
+		c.Status(http.StatusOK)
 	}
 }
