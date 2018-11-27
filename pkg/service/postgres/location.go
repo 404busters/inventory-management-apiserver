@@ -23,6 +23,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 	"gitlab.com/ysitd-cloud/golang-packages/dbutils"
+	"time"
 )
 
 // For static type checking
@@ -118,7 +119,35 @@ func (s *LocationService) Create(ctx context.Context, input *core.LocationInput)
 }
 
 func (s *LocationService) Update(ctx context.Context, id string, input *core.LocationInput) (*core.Location, error) {
-	return nil, nil
+	conn, err := s.Connector.Connect(ctx)
+	if err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+	defer conn.Close()
+
+	var location core.Location
+
+	tx, err := conn.BeginTx(ctx, nil)
+
+	if err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+
+	current := time.Now()
+
+	row := tx.QueryRowContext(ctx, "UPDATE location SET name = $1, updated_at = $2 WHERE id = $3 RETURNING id, name", input.Name, current, id)
+	defer tx.Rollback()
+
+	if err := row.Scan(&location.Id, &location.Name); err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
+
+	tx.Commit()
+
+	return &location, nil
 }
 
 func (s *LocationService) Delete(ctx context.Context, id string) error {
