@@ -118,3 +118,22 @@ func (h *locationHandler) Update(c *gin.Context) {
 		})
 	}
 }
+
+func (h *locationHandler) Delete(c *gin.Context) {
+	id := c.Param("id")
+
+	err := h.Service.Delete(c, id)
+	if err == sql.ErrNoRows {
+		c.JSON(http.StatusNotFound, ErrorRes{
+			Code:    "item_not_Found",
+			Message: err.Error(),
+		})
+	} else if err != nil {
+		c.JSON(http.StatusServiceUnavailable, ErrorRes{
+			Code:    "database_error",
+			Message: err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, nil)
+	}
+}

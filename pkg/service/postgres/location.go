@@ -134,7 +134,7 @@ func (s *LocationService) Update(ctx context.Context, id string, input *core.Loc
 		return nil, err
 	}
 
-	row := tx.QueryRowContext(ctx, "UPDATE location SET name = $1, updated_at = current_timestamp WHERE id = $3 RETURNING id, name", input.Name, id)
+	row := tx.QueryRowContext(ctx, "UPDATE location SET name = $1, updated_at = current_timestamp WHERE id = $2 RETURNING id, name", input.Name, id)
 	defer tx.Rollback()
 
 	if err := row.Scan(&location.Id, &location.Name); err != nil {
@@ -155,14 +155,27 @@ func (s *LocationService) Delete(ctx context.Context, id string) error {
 	}
 	defer conn.Close()
 
-	//tx, err := conn.BeginTx(ctx, nil)
+	tx, err := conn.BeginTx(ctx, nil)
 
 	if err != nil {
 		s.Logger.Error(err)
 		return err
 	}
-	//TODO:
-	//result, err := tx.Exec(ctx, "DELETE FROM location WHERE id = $1", id)
 
+	result, err := tx.Exec("DELETE FROM location WHERE id = $1", id)
+	defer tx.Rollback()
+
+	if err != nil {
+		s.Logger.Error(err)
+		return err
+	}
+
+	cnt, err := result.RowsAffected()
+	if err != nil || cnt <= 0 {
+		s.Logger.Error(err)
+		return sql.ErrNoRows
+	}
+
+	tx.Commit()
 	return nil
 }
