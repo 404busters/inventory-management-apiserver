@@ -387,7 +387,7 @@ definitions:
         - "STOCK"
         - "IN_USE"
         - "REPAIR"
-  InventoryInpatch:
+  InventoryInput:
     type: "object"
     properties:
       itemType:
@@ -408,7 +408,7 @@ definitions:
         type: "string"
       name:
         type: "string"
-  LocationInpatch:
+  LocationInput:
     type: "object"
     properties:
       name:
@@ -425,7 +425,7 @@ definitions:
         example: "doggie"
       description:
         type: "string"
-  ItemTypeInpatch:
+  ItemTypeInput:
     type: "object"
     required:
     - "name"
