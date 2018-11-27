@@ -65,7 +65,7 @@ func (h *locationHandler) Get(c *gin.Context) {
 }
 
 func (h *locationHandler) Create(c *gin.Context) {
-	var locationInput core.LocationInput
+	var locationInput core.Location
 	err := c.ShouldBindJSON(&locationInput)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
@@ -90,7 +90,7 @@ func (h *locationHandler) Create(c *gin.Context) {
 
 func (h *locationHandler) Update(c *gin.Context) {
 	id := c.Param("id")
-	var locationInput core.LocationInput
+	var locationInput core.Location
 	err := c.ShouldBindJSON(&locationInput)
 
 	if err != nil {

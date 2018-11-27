@@ -87,7 +87,7 @@ func (s *LocationService) Get(ctx context.Context, id string) (*core.Location, e
 	return &location, nil
 }
 
-func (s *LocationService) Create(ctx context.Context, input *core.LocationInput) (*core.Location, error) {
+func (s *LocationService) Create(ctx context.Context, input *core.Location) (*core.Location, error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
@@ -120,7 +120,7 @@ func (s *LocationService) Create(ctx context.Context, input *core.LocationInput)
 	return &location, nil
 }
 
-func (s *LocationService) Update(ctx context.Context, id string, input *core.LocationInput) (*core.Location, error) {
+func (s *LocationService) Update(ctx context.Context, id string, input *core.Location) (*core.Location, error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
