@@ -135,7 +135,7 @@ func (s *LocationService) Update(ctx context.Context, id string, input *core.Loc
 		return nil, err
 	}
 
-	current := time.Now()
+	current := time.Now().UTC()
 
 	row := tx.QueryRowContext(ctx, "UPDATE location SET name = $1, updated_at = $2 WHERE id = $3 RETURNING id, name", input.Name, current, id)
 	defer tx.Rollback()
@@ -151,5 +151,12 @@ func (s *LocationService) Update(ctx context.Context, id string, input *core.Loc
 }
 
 func (s *LocationService) Delete(ctx context.Context, id string) error {
+	conn, err := s.Connector.Connect(ctx)
+	if err != nil {
+		s.Logger.Error(err)
+		return err
+	}
+	defer conn.Close()
+
 	return nil
 }

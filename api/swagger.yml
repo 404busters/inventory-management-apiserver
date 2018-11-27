@@ -83,7 +83,7 @@ paths:
           $ref : "#/definitions/Error422Response"
         503:
           $ref : "#/definitions/ErrorResponse"
-    put:
+    patch:
       tags:
       - "inventory"
       produces:
@@ -170,7 +170,7 @@ paths:
           $ref : "#/definitions/Error422Response"
         503:
           $ref : "#/definitions/ErrorResponse"
-    put:
+    patch:
       tags:
       - "location"  
       produces:
@@ -301,7 +301,7 @@ paths:
                 $ref: "#/definitions/ItemType"
         503:
           $ref : "#/definitions/ErrorResponse"
-    put:
+    patch:
       tags:
       - "ItemType"  
       produces:
@@ -387,7 +387,7 @@ definitions:
         - "STOCK"
         - "IN_USE"
         - "REPAIR"
-  InventoryInput:
+  InventoryInpatch:
     type: "object"
     properties:
       itemType:
@@ -408,7 +408,7 @@ definitions:
         type: "string"
       name:
         type: "string"
-  LocationInput:
+  LocationInpatch:
     type: "object"
     properties:
       name:
@@ -425,7 +425,7 @@ definitions:
         example: "doggie"
       description:
         type: "string"
-  ItemTypeInput:
+  ItemTypeInpatch:
     type: "object"
     required:
     - "name"
