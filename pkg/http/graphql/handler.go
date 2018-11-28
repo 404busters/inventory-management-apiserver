@@ -33,13 +33,15 @@ type graphQLProvider interface {
 func CreateHandler(ctx context.Context) http.Handler {
 	builder := schemabuilder.NewSchema()
 
-	locationService := inject.GetLocationServiceFromContext(ctx)
 	logger := inject.GetLoggerFromContext(ctx)
 
 	providers := []graphQLProvider{
 		&locationQueryProvider{
-			service: locationService,
+			service: inject.GetLocationServiceFromContext(ctx),
 			logger:  logger.WithField("query", "location"),
+		},
+		&itemTypeQueryProvider{
+			service: inject.GetItemTypeServiceFromContext(ctx),
 		},
 	}
 

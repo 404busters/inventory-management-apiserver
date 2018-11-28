@@ -180,7 +180,7 @@ func (s *ItemTypeService) Delete(ctx context.Context, id string) (err error) {
 
 	if affected, err := result.RowsAffected(); err != nil {
 		s.Logger.Error(err)
-		return
+		return err
 	} else if affected != 1 {
 		return core.ErrRecordNotExists
 	}

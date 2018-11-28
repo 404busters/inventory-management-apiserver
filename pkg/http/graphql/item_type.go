@@ -26,7 +26,7 @@ type itemTypeQueryProvider struct {
 	service core.ItemTypeService
 }
 
-func (p *itemTypeQueryProvider) provider(builder *schemabuilder.Schema) {
+func (p *itemTypeQueryProvider) provide(builder *schemabuilder.Schema) {
 	query := builder.Query()
 	query.FieldFunc("itemType", func(ctx context.Context, args struct{ Id *string }) ([]core.ItemType, error) {
 		if id := args.Id; id != nil {
