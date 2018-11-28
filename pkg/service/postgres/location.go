@@ -28,7 +28,6 @@ import (
 // For static type checking
 var _ core.LocationService = &LocationService{}
 
-// TODO: implement
 type LocationService struct {
 	Connector *dbutils.Connector
 	Logger    logrus.FieldLogger
@@ -80,14 +79,15 @@ func (s *LocationService) Get(ctx context.Context, id string) (*core.Location, e
 
 	row := conn.QueryRowContext(ctx, "SELECT id, name FROM location WHERE id = $1", id)
 	if err := row.Scan(&location.Id, &location.Name); err == sql.ErrNoRows {
-		s.Logger.Error(err)
+		return nil, nil
+	} else if err != nil {
 		return nil, err
 	}
 
 	return &location, nil
 }
 
-func (s *LocationService) Create(ctx context.Context, input *core.LocationInput) (*core.Location, error) {
+func (s *LocationService) Create(ctx context.Context, input *core.Location) (*core.Location, error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
@@ -112,12 +112,15 @@ func (s *LocationService) Create(ctx context.Context, input *core.LocationInput)
 		return nil, err
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
 
 	return &location, nil
 }
 
-func (s *LocationService) Update(ctx context.Context, id string, input *core.LocationInput) (*core.Location, error) {
+func (s *LocationService) Update(ctx context.Context, id string, input *core.Location) (*core.Location, error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
@@ -142,7 +145,10 @@ func (s *LocationService) Update(ctx context.Context, id string, input *core.Loc
 		return nil, err
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		s.Logger.Error(err)
+		return nil, err
+	}
 
 	return &location, nil
 }
@@ -171,11 +177,17 @@ func (s *LocationService) Delete(ctx context.Context, id string) error {
 	}
 
 	cnt, err := result.RowsAffected()
-	if err != nil || cnt <= 0 {
+	if err != nil {
 		s.Logger.Error(err)
+		return err
+	} else if cnt < 1 {
 		return sql.ErrNoRows
 	}
 
-	tx.Commit()
+	if err := tx.Commit(); err != nil {
+		s.Logger.Error(err)
+		return err
+	}
+
 	return nil
 }

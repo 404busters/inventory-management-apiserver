@@ -19,18 +19,14 @@ package core
 import "context"
 
 type Location struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
-type LocationInput struct {
+	Id   string `json:"id,omitempty"`
 	Name string `json:"name"`
 }
 
 type LocationService interface {
 	List(ctx context.Context) ([]Location, error)
 	Get(ctx context.Context, id string) (*Location, error)
-	Create(ctx context.Context, input *LocationInput) (*Location, error)
-	Update(ctx context.Context, id string, input *LocationInput) (*Location, error)
+	Create(ctx context.Context, input *Location) (*Location, error)
+	Update(ctx context.Context, id string, input *Location) (*Location, error)
 	Delete(ctx context.Context, id string) error
 }
