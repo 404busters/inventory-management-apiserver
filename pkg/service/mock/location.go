@@ -54,14 +54,14 @@ func (s *LocationService) Get(ctx context.Context, id string) (*core.Location, e
 	return nil, nil
 }
 
-func (s *LocationService) Create(ctx context.Context, input *core.LocationInput) (*core.Location, error) {
+func (s *LocationService) Create(ctx context.Context, input *core.Location) (*core.Location, error) {
 	id := uuid.NewV4().String()
 	location := core.Location{Id: id, Name: input.Name}
 	locations = append(locations, location)
 	return &location, nil
 }
 
-func (s *LocationService) Update(ctx context.Context, id string, input *core.LocationInput) (*core.Location, error) {
+func (s *LocationService) Update(ctx context.Context, id string, input *core.Location) (*core.Location, error) {
 	for _, location := range locations {
 		if location.Id == id {
 			location.Name = input.Name
