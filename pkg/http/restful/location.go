@@ -18,6 +18,7 @@ package restful
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -69,7 +70,7 @@ func (h *locationHandler) Create(c *gin.Context) {
 	err := c.ShouldBindJSON(&locationInput)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
-			Code:    "",
+			Code:    "invalid_input",
 			Message: err.Error(),
 		})
 		return
@@ -95,17 +96,17 @@ func (h *locationHandler) Update(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
-			Code:    "",
+			Code:    "invalid_input",
 			Message: err.Error(),
 		})
 		return
 	}
 
 	location, err := h.Service.Update(c, id, &locationInput)
-	if err == sql.ErrNoRows {
+	if err == nil && location == nil {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
-			Message: err.Error(),
+			Message: fmt.Sprintf("location %s is not exists", id),
 		})
 	} else if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
@@ -122,11 +123,10 @@ func (h *locationHandler) Update(c *gin.Context) {
 func (h *locationHandler) Delete(c *gin.Context) {
 	id := c.Param("id")
 
-	err := h.Service.Delete(c, id)
-	if err == sql.ErrNoRows {
+	if err := h.Service.Delete(c, id); err == core.ErrRecordNotExists {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
-			Message: err.Error(),
+			Message: fmt.Sprintf("location %s is not exists", id),
 		})
 	} else if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
