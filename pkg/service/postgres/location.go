@@ -19,6 +19,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
@@ -109,7 +110,7 @@ func (s *LocationService) Create(ctx context.Context, input *core.Location) (*co
 
 	if err := row.Scan(&location.Id, &location.Name); err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return nil, nil
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -142,7 +143,7 @@ func (s *LocationService) Update(ctx context.Context, id string, input *core.Loc
 
 	if err := row.Scan(&location.Id, &location.Name); err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return nil, nil
 	}
 
 	if err := tx.Commit(); err != nil {
@@ -181,7 +182,7 @@ func (s *LocationService) Delete(ctx context.Context, id string) error {
 		s.Logger.Error(err)
 		return err
 	} else if cnt < 1 {
-		return sql.ErrNoRows
+		return errors.New("item_not_Found")
 	}
 
 	if err := tx.Commit(); err != nil {

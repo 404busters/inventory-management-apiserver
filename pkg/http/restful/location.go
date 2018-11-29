@@ -102,7 +102,7 @@ func (h *locationHandler) Update(c *gin.Context) {
 	}
 
 	location, err := h.Service.Update(c, id, &locationInput)
-	if err == sql.ErrNoRows {
+	if err == nil && location == nil {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
 			Message: err.Error(),
@@ -123,7 +123,7 @@ func (h *locationHandler) Delete(c *gin.Context) {
 	id := c.Param("id")
 
 	err := h.Service.Delete(c, id)
-	if err == sql.ErrNoRows {
+	if err.Error() == "item_not_Found" {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
 			Message: err.Error(),
