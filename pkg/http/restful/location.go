@@ -69,7 +69,7 @@ func (h *locationHandler) Create(c *gin.Context) {
 	err := c.ShouldBindJSON(&locationInput)
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
-			Code:    "",
+			Code:    "invalid_input",
 			Message: err.Error(),
 		})
 		return
@@ -95,7 +95,7 @@ func (h *locationHandler) Update(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
-			Code:    "",
+			Code:    "invalid_input",
 			Message: err.Error(),
 		})
 		return
