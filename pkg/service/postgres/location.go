@@ -19,7 +19,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
-	"errors"
+
 	"github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
@@ -182,7 +182,7 @@ func (s *LocationService) Delete(ctx context.Context, id string) error {
 		s.Logger.Error(err)
 		return err
 	} else if cnt < 1 {
-		return errors.New("item_not_Found")
+		return core.ErrRecordNotExists
 	}
 
 	if err := tx.Commit(); err != nil {

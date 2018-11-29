@@ -18,6 +18,7 @@ package restful
 
 import (
 	"database/sql"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -105,7 +106,7 @@ func (h *locationHandler) Update(c *gin.Context) {
 	if err == nil && location == nil {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
-			Message: err.Error(),
+			Message: fmt.Sprintf("location %s is not exists", id),
 		})
 	} else if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
@@ -122,11 +123,10 @@ func (h *locationHandler) Update(c *gin.Context) {
 func (h *locationHandler) Delete(c *gin.Context) {
 	id := c.Param("id")
 
-	err := h.Service.Delete(c, id)
-	if err.Error() == "item_not_Found" {
+	if err := h.Service.Delete(c, id); err == core.ErrRecordNotExists {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
-			Message: err.Error(),
+			Message: fmt.Sprintf("location %s is not exists", id),
 		})
 	} else if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
