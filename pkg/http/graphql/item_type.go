@@ -33,6 +33,8 @@ func (p *itemTypeQueryProvider) provide(builder *schemabuilder.Schema) {
 			entry, err := p.service.Get(ctx, *id)
 			if err != nil {
 				return nil, err
+			} else if entry == nil {
+				return nil, nil
 			}
 			return []core.ItemType{*entry}, nil
 		}

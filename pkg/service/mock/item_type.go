@@ -22,6 +22,15 @@ import (
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
 
+func NewItemTypeService() *ItemTypeService {
+	return &ItemTypeService{
+		itemTypes: map[string]core.ItemType{
+			"910da154-ba93-4a2e-bda4-83d45b212cf0": {Id: "910da154-ba93-4a2e-bda4-83d45b212cf0", Name: "Item Type 1", Description: "Item Type #1 in mock"},
+			"de1162c8-4382-4822-ba4d-05a9a33b10a2": {Id: "de1162c8-4382-4822-ba4d-05a9a33b10a2", Name: "Item Type 2", Description: "Item Type #2 in mock"},
+		},
+	}
+}
+
 type ItemTypeService struct {
 	itemTypes map[string]core.ItemType
 }

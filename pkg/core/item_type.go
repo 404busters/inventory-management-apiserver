@@ -20,8 +20,8 @@ import "context"
 
 type ItemType struct {
 	Id          string `json:"id,omitempty"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name        string `json:"name" binding:"required"`
+	Description string `json:"description" binding:"required"`
 }
 
 type ItemTypeService interface {

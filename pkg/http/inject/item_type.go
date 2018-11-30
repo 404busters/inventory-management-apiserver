@@ -26,7 +26,7 @@ func BindItemTypeServiceToContext(ctx context.Context, service core.ItemTypeServ
 }
 
 func GetItemTypeServiceFromContext(ctx context.Context) core.ItemTypeService {
-	val := ctx.Value(LocationServiceKey)
+	val := ctx.Value(ItemTypeServiceKey)
 	if service, ok := val.(core.ItemTypeService); ok {
 		return service
 	}
