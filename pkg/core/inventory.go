@@ -17,14 +17,14 @@ package core
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes/timestamp"
+	"time"
 )
 
 type Inventory struct {
 	Id           string              `json:"id,omitempty"`
 	ItemType     string              `json:"itemType"`
 	Location     string              `json:"location"`
-	LastSeenTime timestamp.Timestamp `json:"lastSeenTime"`
+	LastSeenTime time.Time           `json:"lastSeenTime"`
 	Status       StatusEnum          `json:"status"`
 }
 
