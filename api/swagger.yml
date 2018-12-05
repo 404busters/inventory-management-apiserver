@@ -2,26 +2,23 @@ swagger: "2.0"
 info:
   version: "1.0.0"
   title: "Inventory management"
-  termsOfService: "http://swagger.io/terms/"
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "petstore.swagger.io"
+host: "localhost:8080"
 basePath: "/api/v1"
 tags:
-- name: "inventory"
-- name: "location"
-- name: "ItemType"
-- name: "user"
-  description: "Operations about user"
+  - name: "inventory"
+  - name: "location"
+  - name: "ItemType"
+  - name: "user"
 schemes:
-- "https"
-- "http"
+  - "http"
 paths:
   /inventory:
     post:
       tags:
-      - "inventory"
+        - "inventory"
       produces:
         - "application/json"
       consumes:
@@ -30,7 +27,7 @@ paths:
         - in: body
           name: inventory
           schema:
-            $ref: "#/definitions/InventoryInput" 
+            $ref: "#/definitions/InventoryInput"
       responses:
         200:
           description: "successful operation"
@@ -39,21 +36,29 @@ paths:
             properties:
               data:
                 $ref: "#/definitions/Inventory"
+        404:
+          description: Inventory not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
   /inventory/{id}:
     get:
       tags:
-      - "inventory"
+        - "inventory"
       produces:
         - "application/json"
       parameters:
-      - in: "path"
-        name: id
-        type: string
-        required: true
+        - in: "path"
+          name: id
+          type: string
+          required: true
       responses:
         200:
           description: "successful operation"
@@ -62,37 +67,53 @@ paths:
             properties:
               data:
                 $ref: "#/definitions/Inventory"
+        404:
+          description: Inventory not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
     delete:
       tags:
-      - "inventory"  
-      produces:
-      - "application/json"
-      parameters:
-      - in: "path"
-        name: id
-        type: string
-        required: true
-      responses:
-        200:
-          description: "successful operation"
-        422:
-          $ref : "#/definitions/Error422Response"
-        503:
-          $ref : "#/definitions/ErrorResponse"
-    patch:
-      tags:
-      - "inventory"
+        - "inventory"
       produces:
         - "application/json"
       parameters:
-      - in: "path"
-        name: id
-        type: string
-        required: true
+        - in: "path"
+          name: id
+          type: string
+          required: true
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: Inventory not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+        422:
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
+        503:
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
+    patch:
+      tags:
+        - "inventory"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "path"
+          name: id
+          type: string
+          required: true
       responses:
         200:
           description: "successful operation"
@@ -101,16 +122,24 @@ paths:
             properties:
               data:
                 $ref: "#/definitions/Inventory"
+        404:
+          description: Inventory not found
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"/n$ref: "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
   /location:
     get:
       tags:
-      - "location"
+        - "location"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "successful operation"
@@ -121,15 +150,21 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/Location"
+        404:
+          description: location not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
     post:
       tags:
-      - "location"  
+        - "location"
       produces:
-      - "application/json"
+        - "application/json"
       consumes:
-      - "application/json"
+        - "application/json"
       parameters:
         - in: body
           name: location
@@ -137,27 +172,31 @@ paths:
             type: object
             properties:
               data:
-                $ref: "#/definitions/LocationInput"  
+                $ref: "#/definitions/LocationInput"
       responses:
         200:
           description: "successful operation"
           schema:
             $ref: "#/definitions/Location"
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
   /location/{id}:
     get:
       tags:
-      - "location"  
+        - "location"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "path"
-        name: id
-        type: string
-        required: true
+        - in: "path"
+          name: id
+          type: string
+          required: true
       responses:
         200:
           description: "successful operation"
@@ -166,15 +205,23 @@ paths:
             properties:
               data:
                 $ref: "#/definitions/Location"
+        404:
+          description: location not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
     patch:
       tags:
-      - "location"  
+        - "location"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
         - in: "path"
           name: id
@@ -183,7 +230,7 @@ paths:
         - in: body
           name: location
           schema:
-            $ref: "#/definitions/LocationInput"  
+            $ref: "#/definitions/LocationInput"
       responses:
         200:
           description: "successful operation"
@@ -192,38 +239,54 @@ paths:
             properties:
               data:
                 $ref: "#/definitions/Location"
+        404:
+          description: location not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
     delete:
       tags:
-      - "location"  
+        - "location"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "path"
-        name: id
-        type: string
-        required: true
+        - in: "path"
+          name: id
+          type: string
+          required: true
       responses:
         200:
           description: "successful operation"
+        404:
+          description: location not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
   /location/{locationId}/inventory:
     get:
       tags:
-      - "location"
+        - "location"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "path"
-        name: locationId
-        type: string
-        required: true
+        - in: "path"
+          name: locationId
+          type: string
+          required: true
       responses:
         200:
           description: "successful operation"
@@ -234,16 +297,24 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/Inventory"
+        404:
+          description: location not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
   /itemType:
     get:
       tags:
-      - "ItemType"
+        - "ItemType"
       produces:
-      - "application/json"
+        - "application/json"
       responses:
         200:
           description: "successful operation"
@@ -255,19 +326,21 @@ paths:
                 items:
                   $ref: "#/definitions/ItemType"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
     post:
       tags:
-      - "ItemType"  
+        - "ItemType"
       produces:
-      - "application/json"
+        - "application/json"
       consumes:
-      - "application/json"
+        - "application/json"
       parameters:
         - in: body
           name: location
           schema:
-            $ref: "#/definitions/ItemTypeInput"  
+            $ref: "#/definitions/ItemTypeInput"
       responses:
         200:
           description: "successful operation"
@@ -277,20 +350,24 @@ paths:
               data:
                 $ref: "#/definitions/ItemType"
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server
+          schema:
+            $ref : "#/definitions/ErrorResponse"
   /itemType/{id}:
     get:
       tags:
-      - "ItemType"
+        - "ItemType"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "path"
-        name: id
-        type: string
-        required: true
+        - in: "path"
+          name: id
+          type: string
+          required: true
       responses:
         200:
           description: "successful operation"
@@ -299,13 +376,19 @@ paths:
             properties:
               data:
                 $ref: "#/definitions/ItemType"
+        404:
+          description: item type not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
     patch:
       tags:
-      - "ItemType"  
+        - "ItemType"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
         - in: "path"
           name: id
@@ -314,7 +397,7 @@ paths:
         - in: body
           name: ItemType
           schema:
-            $ref: "#/definitions/ItemTypeInput"  
+            $ref: "#/definitions/ItemTypeInput"
       responses:
         200:
           description: "successful operation"
@@ -323,38 +406,54 @@ paths:
             properties:
               data:
                 $ref: "#/definitions/ItemType"
+        404:
+          description: item type not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
     delete:
       tags:
-      - "ItemType"  
+        - "ItemType"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "path"
-        name: id
-        type: string
-        required: true
+        - in: "path"
+          name: id
+          type: string
+          required: true
       responses:
         200:
           description: "successful operation"
+        404:
+          description: item type not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         422:
-          $ref : "#/definitions/Error422Response"
+          description: Invalid Input
+          schema:
+            $ref : "#/definitions/Error422Response"
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
   /itemType/{itemId}/inventory:
     get:
       tags:
-      - "ItemType"
+        - "ItemType"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - in: "path"
-        name: itemId
-        type: string
-        required: true
+        - in: "path"
+          name: itemId
+          type: string
+          required: true
       responses:
         200:
           description: "successful operation"
@@ -365,8 +464,140 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/ItemType"
+        404:
+          description: item type not exists
+          schema:
+            $ref: '#/definitions/ErrorResponse'
         503:
-          $ref : "#/definitions/ErrorResponse"
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
+  /user:
+    get:
+      tags:
+        - user
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful list user
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/User"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+        - user
+      parameters:
+        - in: body
+          name: User
+          schema:
+            $ref: "#/definitions/UserInput"
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful Create user
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "#/definitions/User"
+        422:
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error422Response"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+  /user/{user}:
+    get:
+      tags:
+        - user
+      parameters:
+        - name: user
+          in: path
+          type: string
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful get user
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "#/definitions/User"
+        404:
+          description: User not exists
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    patch:
+      tags:
+        - user
+      parameters:
+        - name: user
+          in: path
+          type: string
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful update user
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "#/definitions/User"
+        404:
+          description: User not exists
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      tags:
+        - user
+      parameters:
+        - name: user
+          in: path
+          type: string
+          required: true
+      produces:
+        - application/json
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: user not exists
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        422:
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error422Response"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
 definitions:
   Inventory:
     type: "object"
@@ -384,9 +615,9 @@ definitions:
         type: "string"
         description: "Order Status"
         enum:
-        - "STOCK"
-        - "IN_USE"
-        - "REPAIR"
+          - "STOCK"
+          - "IN_USE"
+          - "REPAIR"
   InventoryInput:
     type: "object"
     properties:
@@ -398,9 +629,9 @@ definitions:
         type: "string"
         description: "Order Status"
         enum:
-        - "STOCK"
-        - "IN_USE"
-        - "REPAIR"
+          - "STOCK"
+          - "IN_USE"
+          - "REPAIR"
   Location:
     type: "object"
     properties:
@@ -416,7 +647,7 @@ definitions:
   ItemType:
     type: "object"
     required:
-    - "name"
+      - "name"
     properties:
       id:
         type: "string"
@@ -428,15 +659,31 @@ definitions:
   ItemTypeInput:
     type: "object"
     required:
-    - "name"
+      - "name"
     properties:
       name:
         type: "string"
         example: "doggie"
       description:
         type: "string"
+  User:
+    type: object
+    required:
+      - id
+      - name
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+  UserInput:
+    type: object
+    required:
+      - name
+    properties:
+      name:
+        type: string
   Error422Response:
-    description: "Unprocessable Entity"
     type: "object"
     properties:
       code:
@@ -446,7 +693,6 @@ definitions:
       params:
         type: "object"
   ErrorResponse:
-    description: "Service Unavailable"
     type: "object"
     properties:
       code:
@@ -455,6 +701,3 @@ definitions:
         type: "string"
       params:
         type: "object"
-externalDocs:
-  description: "Find out more about Swagger"
-  url: "http://swagger.io"
