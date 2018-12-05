@@ -5,7 +5,7 @@ module gitlab.com/404busters/inventory-management/apiserver
 require (
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
 	github.com/gin-gonic/gin v1.3.0
-	github.com/golang/protobuf v1.2.0 // indirect
+	github.com/golang/protobuf v1.2.0
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/graphql-go/graphql v0.7.6 // indirect

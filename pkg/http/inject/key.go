@@ -22,4 +22,5 @@ const (
 	LocationServiceKey contextKey = iota
 	LoggerKey
 	ItemTypeServiceKey
+	InventoryServiceKey
 )
