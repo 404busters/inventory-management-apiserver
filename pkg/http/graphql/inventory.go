@@ -32,7 +32,7 @@ func (p *inventoryProvider) provide(builder *schemabuilder.Schema) {
 		"STOCK":     core.StatusStock,
 		"IN_USE":    core.StatusInUse,
 		"REPAIR":    core.StatusRepair,
-		"TRANSPORT": core.StatusTansport,
+		"TRANSPORT": core.StatusTransport,
 	})
 
 	builder.Query().FieldFunc("inventory", func(ctx context.Context, args struct{ Id string }) (*core.Inventory, error) {
