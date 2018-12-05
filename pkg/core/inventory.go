@@ -31,10 +31,10 @@ type Inventory struct {
 type InventoryStatus string
 
 const (
-	Stock    InventoryStatus = "STOCK"
-	InUse    InventoryStatus = "IN_USE"
-	Repair   InventoryStatus = "REPAIR"
-	Tansport InventoryStatus = "TRANSPORT"
+	StatusStock    InventoryStatus = "STOCK"
+	StatusInUse    InventoryStatus = "IN_USE"
+	StatusRepair   InventoryStatus = "REPAIR"
+	StatusTansport InventoryStatus = "TRANSPORT"
 )
 
 type InventoryService interface {
