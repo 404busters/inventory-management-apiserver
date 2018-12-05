@@ -618,6 +618,7 @@ definitions:
           - "STOCK"
           - "IN_USE"
           - "REPAIR"
+          - "TRANSPORT"
   InventoryInput:
     type: "object"
     properties:
@@ -632,6 +633,7 @@ definitions:
           - "STOCK"
           - "IN_USE"
           - "REPAIR"
+          - "TRANSPORT"
   Location:
     type: "object"
     properties:
