@@ -41,4 +41,9 @@ func (l *locationQueryProvider) provide(builder *schemabuilder.Schema) {
 		}
 		return l.service.List(ctx)
 	})
+
+	inventory := builder.Object("Inventory", core.Inventory{})
+	inventory.FieldFunc("location", func(ctx context.Context, i *core.Inventory) (*core.Location, error) {
+		return l.service.Get(ctx, i.Location)
+	}, schemabuilder.NonNullable)
 }

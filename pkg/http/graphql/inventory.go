@@ -18,31 +18,24 @@ package graphql
 
 import (
 	"context"
+
 	"github.com/samsarahq/thunder/graphql/schemabuilder"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
 
-type itemTypeQueryProvider struct {
-	service core.ItemTypeService
+type inventoryProvider struct {
+	service core.InventoryService
 }
 
-func (p *itemTypeQueryProvider) provide(builder *schemabuilder.Schema) {
-	query := builder.Query()
-	query.FieldFunc("itemType", func(ctx context.Context, args struct{ Id *string }) ([]core.ItemType, error) {
-		if id := args.Id; id != nil {
-			entry, err := p.service.Get(ctx, *id)
-			if err != nil {
-				return nil, err
-			} else if entry == nil {
-				return nil, nil
-			}
-			return []core.ItemType{*entry}, nil
-		}
-		return p.service.List(ctx)
+func (p *inventoryProvider) provide(builder *schemabuilder.Schema) {
+	builder.Enum(core.StatusStock, map[string]interface{}{
+		"STOCK":     core.StatusStock,
+		"IN_USE":    core.StatusInUse,
+		"REPAIR":    core.StatusRepair,
+		"TRANSPORT": core.StatusTansport,
 	})
 
-	inventory := builder.Object("Inventory", core.Inventory{})
-	inventory.FieldFunc("itemType", func(ctx context.Context, i *core.Inventory) (*core.ItemType, error) {
-		return p.service.Get(ctx, i.ItemType)
-	}, schemabuilder.NonNullable)
+	builder.Query().FieldFunc("inventory", func(ctx context.Context, args struct{ Id string }) (*core.Inventory, error) {
+		return p.service.Get(ctx, args.Id)
+	})
 }
