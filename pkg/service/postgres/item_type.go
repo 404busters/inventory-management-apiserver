@@ -41,7 +41,7 @@ func (s *ItemTypeService) List(ctx context.Context) (_ []core.ItemType, err erro
 	}
 	defer conn.Close()
 
-	const query = "SELECT id, name, description FROM item_type"
+	const query = "SELECT id, name, description FROM item_type WHERE deleted_at IS NULL"
 	rows, err := conn.QueryContext(ctx, query)
 	if err != nil {
 		s.Logger.Error(err)
@@ -75,7 +75,7 @@ func (s *ItemTypeService) Get(ctx context.Context, id string) (result *core.Item
 	}
 	defer conn.Close()
 
-	const query = "SELECT id, name, description FROM item_type WHERE id = $1"
+	const query = "SELECT id, name, description FROM item_type WHERE id = $1 AND deleted_at IS NULL"
 	row := conn.QueryRowContext(ctx, query, id)
 	result = new(core.ItemType)
 	if err = row.Scan(&result.Id, &result.Name, &result.Description); err == sql.ErrNoRows {
@@ -137,7 +137,7 @@ func (s *ItemTypeService) Update(ctx context.Context, id string, input *core.Ite
 	}
 	defer tx.Rollback()
 
-	const query = "UPDATE item_type SET name = $2, description = $3, updated_at = current_timestamp WHERE id = $1 RETURNING id, name, description"
+	const query = "UPDATE item_type SET name = $2, description = $3, updated_at = current_timestamp WHERE id = $1 AND deleted_at IS NULL RETURNING id, name, description"
 	row := tx.QueryRowContext(ctx, query, id, input.Name, input.Description)
 
 	result = new(core.ItemType)
@@ -171,7 +171,7 @@ func (s *ItemTypeService) Delete(ctx context.Context, id string) (err error) {
 	}
 	defer tx.Rollback()
 
-	const query = "DELETE FROM item_type WHERE id = $1"
+	const query = "UPDATE item_type SET deleted_at = current_timestamp WHERE id = $1 AND deleted_at IS NULL"
 	result, err := tx.ExecContext(ctx, query, id)
 	if err != nil {
 		s.Logger.Error(err)
