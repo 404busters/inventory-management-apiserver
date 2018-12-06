@@ -24,36 +24,40 @@ import (
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/http/inject"
 )
 
+type resourceHandler interface {
+	list(*gin.Context)
+	get(*gin.Context)
+	create(*gin.Context)
+	update(*gin.Context)
+	delete(*gin.Context)
+}
+
 func CreateHandler(ctx context.Context) http.Handler {
 	app := gin.New()
 	basePath := "/api"
 
 	v1 := app.Group(basePath + "/v1")
 
-	logger := inject.GetLoggerFromContext(ctx)
-
-	{
-		service := inject.GetLocationServiceFromContext(ctx)
-		handler := locationHandler{
-			Service: service,
-			Logger:  logger.WithField("controller", "location"),
-		}
-		v1.GET("/location", handler.list)
-		v1.GET("/location/:id", handler.Get)
-		v1.POST("/location", handler.Create)
-		v1.PATCH("/location/:id", handler.Update)
-		v1.DELETE("/location/:id", handler.Delete)
+	handlers := map[string]resourceHandler{
+		"user": &userHandler{
+			service: inject.GetUserServiceFromContext(ctx),
+		},
+		"itemType": &itemTypeHandler{
+			Service: inject.GetItemTypeServiceFromContext(ctx),
+		},
+		"location": &locationHandler{
+			Service: inject.GetLocationServiceFromContext(ctx),
+		},
 	}
 
-	{
-		handler := itemTypeHandler{
-			Service: inject.GetItemTypeServiceFromContext(ctx),
-		}
-		v1.GET("/itemType", handler.list)
-		v1.GET("/itemType/:item_type", handler.get)
-		v1.POST("/itemType", handler.create)
-		v1.PATCH("/itemType/:item_type", handler.update)
-		v1.DELETE("/itemType/:item_type", handler.delete)
+	for prefix, handler := range handlers {
+		regularPath := "/" + prefix
+		idPath := regularPath + "/:id"
+		v1.GET(regularPath, handler.list)
+		v1.GET(idPath, handler.get)
+		v1.POST(regularPath, handler.create)
+		v1.PATCH(idPath, handler.update)
+		v1.DELETE(idPath, handler.delete)
 	}
 
 	return app

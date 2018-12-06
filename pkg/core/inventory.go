@@ -17,24 +17,24 @@ package core
 
 import (
 	"context"
-	"github.com/golang/protobuf/ptypes/timestamp"
+	"time"
 )
 
 type Inventory struct {
-	Id           string              `json:"id,omitempty"`
-	ItemType     string              `json:"itemType"`
-	Location     string              `json:"location"`
-	LastSeenTime timestamp.Timestamp `json:"lastSeenTime"`
-	Status       StatusEnum          `json:"status"`
+	Id           string          `json:"id,omitempty"`
+	ItemType     string          `json:"itemType" graphql:"-"`
+	Location     string          `json:"location" graphql:"-"`
+	LastSeenTime time.Time       `json:"lastSeenTime,omitempty" graphql:"-"`
+	Status       InventoryStatus `json:"status"`
 }
 
-type StatusEnum string
+type InventoryStatus string
 
 const (
-	STOCK     StatusEnum = "STOCK"
-	IN_USE    StatusEnum = "IN_USE"
-	REPAIR    StatusEnum = "REPAIR"
-	TRANSPORT StatusEnum = "TRANSPORT"
+	StatusStock     InventoryStatus = "STOCK"
+	StatusInUse     InventoryStatus = "IN_USE"
+	StatusRepair    InventoryStatus = "REPAIR"
+	StatusTransport InventoryStatus = "TRANSPORT"
 )
 
 type InventoryService interface {

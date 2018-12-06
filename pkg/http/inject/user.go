@@ -16,12 +16,20 @@
 
 package inject
 
-type contextKey int
+import (
+	"context"
 
-const (
-	LocationServiceKey contextKey = iota
-	LoggerKey
-	ItemTypeServiceKey
-	InventoryServiceKey
-	UserServiceKey
+	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
+
+func BindUserServiceToContext(ctx context.Context, service core.UserService) context.Context {
+	return withValue(ctx, UserServiceKey, service)
+}
+
+func GetUserServiceFromContext(ctx context.Context) core.UserService {
+	val := ctx.Value(UserServiceKey)
+	if service, ok := val.(core.UserService); ok {
+		return service
+	}
+	return nil
+}
