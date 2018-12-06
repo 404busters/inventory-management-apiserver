@@ -29,11 +29,11 @@ type InventoryService struct {
 	Logger    logrus.FieldLogger
 }
 
-func (s *InventoryService) ItemTypeList(ctx context.Context) ([]core.Inventory, error) {
+func (s *InventoryService) ItemTypeList(ctx context.Context, itemTypeId string) ([]core.Inventory, error) {
 	panic("implement me")
 }
 
-func (s *InventoryService) LocationList(ctx context.Context) ([]core.Inventory, error) {
+func (s *InventoryService) LocationList(ctx context.Context, locationId string) ([]core.Inventory, error) {
 	panic("implement me")
 }
 
