@@ -38,6 +38,8 @@ const (
 )
 
 type InventoryService interface {
+	ItemTypeList(ctx context.Context) ([]Inventory, error)
+	LocationList(ctx context.Context) ([]Inventory, error)
 	Get(ctx context.Context, id string) (*Inventory, error)
 	Create(ctx context.Context, input *Inventory) (*Inventory, error)
 	Update(ctx context.Context, id string, input *Inventory) (*Inventory, error)
