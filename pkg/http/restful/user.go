@@ -18,70 +18,75 @@ package restful
 
 import (
 	"fmt"
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
-	"net/http"
 )
 
-type itemTypeHandler struct {
-	Service core.ItemTypeService
+type userHandler struct {
+	service core.UserService
 }
 
-func (h *itemTypeHandler) list(c *gin.Context) {
-	entries, err := h.Service.List(c)
+func (h *userHandler) list(c *gin.Context) {
+	users, err := h.service.List(c)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
 			Message: err.Error(),
 		})
 	} else {
-		c.JSON(http.StatusOK, ApiRes{Data: entries})
+		c.JSON(http.StatusOK, ApiRes{
+			Data: users,
+		})
 	}
 }
 
-func (h *itemTypeHandler) get(c *gin.Context) {
-	id := c.Param("item_type")
-	entry, err := h.Service.Get(c, id)
+func (h *userHandler) get(c *gin.Context) {
+	id := c.Param("id")
+	user, err := h.service.Get(c, c.Param("id"))
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
 			Message: err.Error(),
 		})
-		return
-	} else if entry == nil {
+	} else if user == nil {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_found",
-			Message: fmt.Sprintf("item type %s is not exists", id),
+			Message: fmt.Sprintf("user %s not exists", id),
 		})
-		return
+	} else {
+		c.JSON(http.StatusOK, ApiRes{
+			Data: user,
+		})
 	}
-	c.JSON(http.StatusOK, ApiRes{Data: entry})
 }
 
-func (h *itemTypeHandler) create(c *gin.Context) {
-	var input core.ItemType
-	if err := c.ShouldBindJSON(&input); err != nil {
+func (h *userHandler) create(c *gin.Context) {
+	var input core.User
+	if err := c.BindJSON(&input); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
 			Code:    "invalid_input",
 			Message: err.Error(),
 		})
 		return
 	}
-
-	entry, err := h.Service.Create(c, &input)
+	user, err := h.service.Create(c, &input)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
 			Message: err.Error(),
 		})
-		return
+	} else {
+		c.JSON(http.StatusOK, ApiRes{
+			Data: user,
+		})
 	}
-	c.JSON(http.StatusOK, ApiRes{Data: entry})
 }
 
-func (h *itemTypeHandler) update(c *gin.Context) {
-	id := c.Param("item_type")
-	var input core.ItemType
+func (h *userHandler) update(c *gin.Context) {
+	id := c.Param("id")
+	var input core.User
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
 			Code:    "invalid_input",
@@ -90,7 +95,7 @@ func (h *itemTypeHandler) update(c *gin.Context) {
 		return
 	}
 
-	entry, err := h.Service.Update(c, id, &input)
+	entry, err := h.service.Update(c, id, &input)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
@@ -100,7 +105,7 @@ func (h *itemTypeHandler) update(c *gin.Context) {
 	} else if entry == nil {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
-			Message: fmt.Sprintf("item type %s not exists", id),
+			Message: fmt.Sprintf("user %s not exists", id),
 		})
 		return
 	}
@@ -108,12 +113,12 @@ func (h *itemTypeHandler) update(c *gin.Context) {
 	c.JSON(http.StatusOK, ApiRes{Data: entry})
 }
 
-func (h *itemTypeHandler) delete(c *gin.Context) {
-	id := c.Param("item_type")
-	if err := h.Service.Delete(c, id); err == core.ErrRecordNotExists {
+func (h *userHandler) delete(c *gin.Context) {
+	id := c.Param("id")
+	if err := h.service.Delete(c, id); err == core.ErrRecordNotExists {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_found",
-			Message: fmt.Sprintf("item type %s is not exists", id),
+			Message: fmt.Sprintf("user %s is not exists", id),
 		})
 		return
 	} else if err != nil {

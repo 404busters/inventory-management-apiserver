@@ -56,5 +56,16 @@ func CreateHandler(ctx context.Context) http.Handler {
 		v1.DELETE("/itemType/:item_type", handler.delete)
 	}
 
+	{
+		handler := userHandler{
+			service: inject.GetUserServiceFromContext(ctx),
+		}
+		v1.GET("/user", handler.list)
+		v1.GET("/user/:id", handler.get)
+		v1.POST("/user", handler.create)
+		v1.PATCH("/user/:id", handler.update)
+		v1.DELETE("/user/:id", handler.delete)
+	}
+
 	return app
 }
