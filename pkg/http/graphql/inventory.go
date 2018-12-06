@@ -38,4 +38,14 @@ func (p *inventoryProvider) provide(builder *schemabuilder.Schema) {
 	builder.Query().FieldFunc("inventory", func(ctx context.Context, args struct{ Id string }) (*core.Inventory, error) {
 		return p.service.Get(ctx, args.Id)
 	})
+
+	location := builder.Object("Location", core.Location{})
+	location.FieldFunc("inventory", func(ctx context.Context, l *core.Location) ([]core.Inventory, error) {
+		return p.service.LocationList(ctx, l.Id)
+	})
+
+	itemType := builder.Object("ItemType", core.ItemType{})
+	itemType.FieldFunc("inventory", func(ctx context.Context, i *core.ItemType) ([]core.Inventory, error) {
+		return p.service.ItemTypeList(ctx, i.Id)
+	})
 }
