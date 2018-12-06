@@ -22,13 +22,11 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
 
 type locationHandler struct {
 	Service core.LocationService
-	Logger  logrus.FieldLogger
 }
 
 func (h *locationHandler) list(c *gin.Context) {
@@ -45,7 +43,7 @@ func (h *locationHandler) list(c *gin.Context) {
 	}
 }
 
-func (h *locationHandler) Get(c *gin.Context) {
+func (h *locationHandler) get(c *gin.Context) {
 	id := c.Param("id")
 	location, err := h.Service.Get(c, id)
 	if err == sql.ErrNoRows {
@@ -65,7 +63,7 @@ func (h *locationHandler) Get(c *gin.Context) {
 	}
 }
 
-func (h *locationHandler) Create(c *gin.Context) {
+func (h *locationHandler) create(c *gin.Context) {
 	var locationInput core.Location
 	err := c.ShouldBindJSON(&locationInput)
 	if err != nil {
@@ -89,7 +87,7 @@ func (h *locationHandler) Create(c *gin.Context) {
 	}
 }
 
-func (h *locationHandler) Update(c *gin.Context) {
+func (h *locationHandler) update(c *gin.Context) {
 	id := c.Param("id")
 	var locationInput core.Location
 	err := c.ShouldBindJSON(&locationInput)
@@ -120,7 +118,7 @@ func (h *locationHandler) Update(c *gin.Context) {
 	}
 }
 
-func (h *locationHandler) Delete(c *gin.Context) {
+func (h *locationHandler) delete(c *gin.Context) {
 	id := c.Param("id")
 
 	if err := h.Service.Delete(c, id); err == core.ErrRecordNotExists {
