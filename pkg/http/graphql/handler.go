@@ -43,6 +43,9 @@ func CreateHandler(ctx context.Context) http.Handler {
 		&itemTypeQueryProvider{
 			service: inject.GetItemTypeServiceFromContext(ctx),
 		},
+		&userProvider{
+			service: inject.GetUserServiceFromContext(ctx),
+		},
 	}
 
 	for _, provider := range providers {
