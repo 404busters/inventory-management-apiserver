@@ -14,14 +14,19 @@
    limitations under the License.
 */
 
-package inject
+package core
 
-type contextKey int
+import "context"
 
-const (
-	LocationServiceKey contextKey = iota
-	LoggerKey
-	ItemTypeServiceKey
-	InventoryServiceKey
-	UserServiceKey
-)
+type User struct {
+	Id   string `json:"id,omitempty"`
+	Name string `json:"name"`
+}
+
+type UserService interface {
+	List(ctx context.Context) ([]User, error)
+	Get(ctx context.Context, id string) (*User, error)
+	Create(ctx context.Context, input *User) (*User, error)
+	Update(ctx context.Context, id string, input *User) (*User, error)
+	Delete(ctx context.Context, id string) error
+}

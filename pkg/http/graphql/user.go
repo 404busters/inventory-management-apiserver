@@ -14,14 +14,28 @@
    limitations under the License.
 */
 
-package inject
+package graphql
 
-type contextKey int
+import (
+	"context"
 
-const (
-	LocationServiceKey contextKey = iota
-	LoggerKey
-	ItemTypeServiceKey
-	InventoryServiceKey
-	UserServiceKey
+	"github.com/samsarahq/thunder/graphql/schemabuilder"
+	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
+
+type userProvider struct {
+	service core.UserService
+}
+
+func (p *userProvider) provide(builder *schemabuilder.Schema) {
+	builder.Query().FieldFunc("user", func(ctx context.Context, args struct{ Id *string }) ([]core.User, error) {
+		if args.Id != nil {
+			user, err := p.service.Get(ctx, *args.Id)
+			if err != nil {
+				return nil, err
+			}
+			return []core.User{*user}, nil
+		}
+		return p.service.List(ctx)
+	})
+}

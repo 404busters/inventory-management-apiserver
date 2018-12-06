@@ -40,7 +40,7 @@ func (h *itemTypeHandler) list(c *gin.Context) {
 }
 
 func (h *itemTypeHandler) get(c *gin.Context) {
-	id := c.Param("item_type")
+	id := c.Param("id")
 	entry, err := h.Service.Get(c, id)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
@@ -80,7 +80,7 @@ func (h *itemTypeHandler) create(c *gin.Context) {
 }
 
 func (h *itemTypeHandler) update(c *gin.Context) {
-	id := c.Param("item_type")
+	id := c.Param("id")
 	var input core.ItemType
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
@@ -100,7 +100,7 @@ func (h *itemTypeHandler) update(c *gin.Context) {
 	} else if entry == nil {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
-			Message: err.Error(),
+			Message: fmt.Sprintf("item type %s not exists", id),
 		})
 		return
 	}
@@ -109,7 +109,7 @@ func (h *itemTypeHandler) update(c *gin.Context) {
 }
 
 func (h *itemTypeHandler) delete(c *gin.Context) {
-	id := c.Param("item_type")
+	id := c.Param("id")
 	if err := h.Service.Delete(c, id); err == core.ErrRecordNotExists {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_found",

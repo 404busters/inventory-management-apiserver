@@ -19,55 +19,53 @@ package postgres
 import (
 	"context"
 	"database/sql"
+
 	"github.com/satori/go.uuid"
 	"github.com/sirupsen/logrus"
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 	"gitlab.com/ysitd-cloud/golang-packages/dbutils"
 )
 
-// For static type checking
-var _ core.ItemTypeService = &ItemTypeService{}
-
-type ItemTypeService struct {
+type UserService struct {
 	Connector *dbutils.Connector
 	Logger    logrus.FieldLogger
 }
 
-func (s *ItemTypeService) List(ctx context.Context) (_ []core.ItemType, err error) {
+func (s *UserService) List(ctx context.Context) (_ []core.User, err error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return
 	}
 	defer conn.Close()
 
-	const query = "SELECT id, name, description FROM item_type WHERE deleted_at IS NULL"
+	const query = "SELECT id, name FROM user"
 	rows, err := conn.QueryContext(ctx, query)
 	if err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return
 	}
 	defer rows.Close()
 
-	result := make([]core.ItemType, 0)
+	users := make([]core.User, 0)
 	for rows.Next() {
-		var itemType core.ItemType
-		if err := rows.Scan(&itemType.Id, &itemType.Name, &itemType.Description); err != nil {
+		var user core.User
+		if err = rows.Scan(&user.Id, &user.Name); err != nil {
 			s.Logger.Error(err)
-			return nil, err
+			return
 		}
-		result = append(result, itemType)
+		users = append(users, user)
 	}
 
-	if err := rows.Err(); err != nil {
+	if err = rows.Err(); err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return
 	}
 
-	return result, nil
+	return users, nil
 }
 
-func (s *ItemTypeService) Get(ctx context.Context, id string) (result *core.ItemType, err error) {
+func (s *UserService) Get(ctx context.Context, id string) (_ *core.User, err error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
@@ -75,20 +73,20 @@ func (s *ItemTypeService) Get(ctx context.Context, id string) (result *core.Item
 	}
 	defer conn.Close()
 
-	const query = "SELECT id, name, description FROM item_type WHERE id = $1 AND deleted_at IS NULL"
+	const query = "SELECT id, name FROM user WHERE id = $1"
 	row := conn.QueryRowContext(ctx, query, id)
-	result = new(core.ItemType)
-	if err = row.Scan(&result.Id, &result.Name, &result.Description); err == sql.ErrNoRows {
+	user := new(core.User)
+	if err = row.Scan(&user.Id, &user.Name); err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return
 	}
 
-	return
+	return user, nil
 }
 
-func (s *ItemTypeService) Create(ctx context.Context, input *core.ItemType) (result *core.ItemType, err error) {
+func (s *UserService) Create(ctx context.Context, input *core.User) (_ *core.User, err error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
@@ -103,26 +101,23 @@ func (s *ItemTypeService) Create(ctx context.Context, input *core.ItemType) (res
 	}
 	defer tx.Rollback()
 
-	const query = "INSERT INTO item_type (id, name, description) VALUES ($1, $2, $3) RETURNING id, name, description"
-	row := tx.QueryRowContext(ctx, query, uuid.NewV4(), input.Name, input.Description)
-
-	result = new(core.ItemType)
-	if err = row.Scan(&result.Id, &result.Name, &result.Description); err == sql.ErrNoRows {
-		return nil, nil
-	} else if err != nil {
+	const query = "INSERT INTO user (id, name) VALUES ($1, $2) RETURNING id, name"
+	row := tx.QueryRowContext(ctx, query, uuid.NewV4(), input.Name)
+	user := new(core.User)
+	if err = row.Scan(&user.Id, &user.Name); err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return
 	}
 
 	if err = tx.Commit(); err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return
 	}
 
-	return
+	return user, nil
 }
 
-func (s *ItemTypeService) Update(ctx context.Context, id string, input *core.ItemType) (result *core.ItemType, err error) {
+func (s *UserService) Update(ctx context.Context, id string, input *core.User) (_ *core.User, err error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
@@ -137,26 +132,25 @@ func (s *ItemTypeService) Update(ctx context.Context, id string, input *core.Ite
 	}
 	defer tx.Rollback()
 
-	const query = "UPDATE item_type SET name = $2, description = $3, updated_at = current_timestamp WHERE id = $1 AND deleted_at IS NULL RETURNING id, name, description"
-	row := tx.QueryRowContext(ctx, query, id, input.Name, input.Description)
-
-	result = new(core.ItemType)
-	if err = row.Scan(&result.Id, &result.Name, &result.Description); err == sql.ErrNoRows {
+	const query = "UPDATE user SET name = $2, updated_at = current_timestamp WHERE id = $1"
+	row := tx.QueryRowContext(ctx, query, uuid.NewV4(), input.Name)
+	user := new(core.User)
+	if err = row.Scan(&user.Id, &user.Name); err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return
 	}
 
 	if err = tx.Commit(); err != nil {
 		s.Logger.Error(err)
-		return nil, err
+		return
 	}
 
-	return
+	return user, nil
 }
 
-func (s *ItemTypeService) Delete(ctx context.Context, id string) (err error) {
+func (s *UserService) Delete(ctx context.Context, id string) (err error) {
 	conn, err := s.Connector.Connect(ctx)
 	if err != nil {
 		s.Logger.Error(err)
@@ -171,16 +165,16 @@ func (s *ItemTypeService) Delete(ctx context.Context, id string) (err error) {
 	}
 	defer tx.Rollback()
 
-	const query = "UPDATE item_type SET deleted_at = current_timestamp WHERE id = $1 AND deleted_at IS NULL"
+	const query = "DELETE FROM user WHERE id = $1"
 	result, err := tx.ExecContext(ctx, query, id)
 	if err != nil {
 		s.Logger.Error(err)
 		return
 	}
-
-	if affected, err := result.RowsAffected(); err != nil {
+	affected, err := result.RowsAffected()
+	if err != nil {
 		s.Logger.Error(err)
-		return err
+		return
 	} else if affected != 1 {
 		return core.ErrRecordNotExists
 	}

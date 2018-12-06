@@ -17,7 +17,6 @@
 package restful
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -25,12 +24,12 @@ import (
 	"gitlab.com/404busters/inventory-management/apiserver/pkg/core"
 )
 
-type locationHandler struct {
-	Service core.LocationService
+type userHandler struct {
+	service core.UserService
 }
 
-func (h *locationHandler) list(c *gin.Context) {
-	locations, err := h.Service.List(c)
+func (h *userHandler) list(c *gin.Context) {
+	users, err := h.service.List(c)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
@@ -38,35 +37,57 @@ func (h *locationHandler) list(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusOK, ApiRes{
-			Data: locations,
+			Data: users,
 		})
 	}
 }
 
-func (h *locationHandler) get(c *gin.Context) {
+func (h *userHandler) get(c *gin.Context) {
 	id := c.Param("id")
-	location, err := h.Service.Get(c, id)
-	if err == sql.ErrNoRows {
-		c.JSON(http.StatusNotFound, ErrorRes{
-			Code:    "item_not_Found",
+	user, err := h.service.Get(c, c.Param("id"))
+	if err != nil {
+		c.JSON(http.StatusServiceUnavailable, ErrorRes{
+			Code:    "database_error",
 			Message: err.Error(),
 		})
-	} else if err != nil {
+	} else if user == nil {
+		c.JSON(http.StatusNotFound, ErrorRes{
+			Code:    "item_not_found",
+			Message: fmt.Sprintf("user %s not exists", id),
+		})
+	} else {
+		c.JSON(http.StatusOK, ApiRes{
+			Data: user,
+		})
+	}
+}
+
+func (h *userHandler) create(c *gin.Context) {
+	var input core.User
+	if err := c.BindJSON(&input); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
+			Code:    "invalid_input",
+			Message: err.Error(),
+		})
+		return
+	}
+	user, err := h.service.Create(c, &input)
+	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
 			Message: err.Error(),
 		})
 	} else {
 		c.JSON(http.StatusOK, ApiRes{
-			Data: location,
+			Data: user,
 		})
 	}
 }
 
-func (h *locationHandler) create(c *gin.Context) {
-	var locationInput core.Location
-	err := c.ShouldBindJSON(&locationInput)
-	if err != nil {
+func (h *userHandler) update(c *gin.Context) {
+	id := c.Param("id")
+	var input core.User
+	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
 			Code:    "invalid_input",
 			Message: err.Error(),
@@ -74,64 +95,38 @@ func (h *locationHandler) create(c *gin.Context) {
 		return
 	}
 
-	location, err := h.Service.Create(c, &locationInput)
+	entry, err := h.service.Update(c, id, &input)
 	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
 			Message: err.Error(),
 		})
-	} else {
-		c.JSON(http.StatusOK, ApiRes{
-			Data: location,
-		})
-	}
-}
-
-func (h *locationHandler) update(c *gin.Context) {
-	id := c.Param("id")
-	var locationInput core.Location
-	err := c.ShouldBindJSON(&locationInput)
-
-	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, ErrorRes{
-			Code:    "invalid_input",
-			Message: err.Error(),
+		return
+	} else if entry == nil {
+		c.JSON(http.StatusNotFound, ErrorRes{
+			Code:    "item_not_Found",
+			Message: fmt.Sprintf("user %s not exists", id),
 		})
 		return
 	}
 
-	location, err := h.Service.Update(c, id, &locationInput)
-	if err == nil && location == nil {
-		c.JSON(http.StatusNotFound, ErrorRes{
-			Code:    "item_not_Found",
-			Message: fmt.Sprintf("location %s is not exists", id),
-		})
-	} else if err != nil {
-		c.JSON(http.StatusServiceUnavailable, ErrorRes{
-			Code:    "database_error",
-			Message: err.Error(),
-		})
-	} else {
-		c.JSON(http.StatusOK, ApiRes{
-			Data: location,
-		})
-	}
+	c.JSON(http.StatusOK, ApiRes{Data: entry})
 }
 
-func (h *locationHandler) delete(c *gin.Context) {
+func (h *userHandler) delete(c *gin.Context) {
 	id := c.Param("id")
-
-	if err := h.Service.Delete(c, id); err == core.ErrRecordNotExists {
+	if err := h.service.Delete(c, id); err == core.ErrRecordNotExists {
 		c.JSON(http.StatusNotFound, ErrorRes{
-			Code:    "item_not_Found",
-			Message: fmt.Sprintf("location %s is not exists", id),
+			Code:    "item_not_found",
+			Message: fmt.Sprintf("user %s is not exists", id),
 		})
+		return
 	} else if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
 			Message: err.Error(),
 		})
-	} else {
-		c.Status(http.StatusOK)
+		return
 	}
+	c.Status(http.StatusOK)
 }

@@ -41,6 +41,11 @@ func bindService(base context.Context) (ctx context.Context) {
 		ctx = inject.BindItemTypeServiceToContext(ctx, service)
 	}
 
+	ctx = inject.BindUserServiceToContext(ctx, &postgres.UserService{
+		Connector: connector,
+		Logger:    logger.WithField("service", "user"),
+	})
+
 	// TODO Add Other Service
 	return
 }
