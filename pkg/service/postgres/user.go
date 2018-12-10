@@ -39,7 +39,7 @@ func (s *UserService) List(ctx context.Context) (_ []core.User, err error) {
 	}
 	defer conn.Close()
 
-	const query = "SELECT id, name FROM user"
+	const query = `SELECT id, name FROM "user"`
 	rows, err := conn.QueryContext(ctx, query)
 	if err != nil {
 		s.Logger.Error(err)
@@ -73,7 +73,7 @@ func (s *UserService) Get(ctx context.Context, id string) (_ *core.User, err err
 	}
 	defer conn.Close()
 
-	const query = "SELECT id, name FROM user WHERE id = $1"
+	const query = `SELECT id, name FROM "user" WHERE id = $1`
 	row := conn.QueryRowContext(ctx, query, id)
 	user := new(core.User)
 	if err = row.Scan(&user.Id, &user.Name); err == sql.ErrNoRows {
@@ -101,7 +101,7 @@ func (s *UserService) Create(ctx context.Context, input *core.User) (_ *core.Use
 	}
 	defer tx.Rollback()
 
-	const query = "INSERT INTO user (id, name) VALUES ($1, $2) RETURNING id, name"
+	const query = `INSERT INTO "user" (id, name) VALUES ($1, $2) RETURNING id, name`
 	row := tx.QueryRowContext(ctx, query, uuid.NewV4(), input.Name)
 	user := new(core.User)
 	if err = row.Scan(&user.Id, &user.Name); err != nil {
@@ -132,7 +132,7 @@ func (s *UserService) Update(ctx context.Context, id string, input *core.User) (
 	}
 	defer tx.Rollback()
 
-	const query = "UPDATE user SET name = $2, updated_at = current_timestamp WHERE id = $1"
+	const query = `UPDATE "user" SET name = $2, updated_at = current_timestamp WHERE id = $1`
 	row := tx.QueryRowContext(ctx, query, uuid.NewV4(), input.Name)
 	user := new(core.User)
 	if err = row.Scan(&user.Id, &user.Name); err == sql.ErrNoRows {
@@ -165,7 +165,7 @@ func (s *UserService) Delete(ctx context.Context, id string) (err error) {
 	}
 	defer tx.Rollback()
 
-	const query = "DELETE FROM user WHERE id = $1"
+	const query = `DELETE FROM "user" WHERE id = $1`
 	result, err := tx.ExecContext(ctx, query, id)
 	if err != nil {
 		s.Logger.Error(err)
