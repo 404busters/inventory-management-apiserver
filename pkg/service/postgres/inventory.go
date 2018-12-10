@@ -134,7 +134,7 @@ func (s *InventoryService) Delete(ctx context.Context, id string) error {
 		return err
 	}
 
-	result, err := tx.Exec("DELETE FROM inventory WHERE id = $1", id)
+	result, err := tx.Exec("UPDATE inventory SET deleted_at= current_timestamp WHERE id = $1", id)
 	defer tx.Rollback()
 
 	if err != nil {
