@@ -40,7 +40,12 @@ func (h *inventoryHandler) Create(c *gin.Context) {
 	}
 
 	inventory, err := h.Service.Create(c, &inventoryInput)
-	if err != nil {
+	if err == core.ErrReferencrNotExists {
+		c.JSON(http.StatusNotFound, ErrorRes{
+			Code:    "item_not_Found",
+			Message: fmt.Sprintf("location˝ %s or item_type %s are not exists", inventoryInput.Location, inventoryInput.ItemType),
+		})
+	} else if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
 			Message: err.Error(),
@@ -70,6 +75,11 @@ func (h *inventoryHandler) Update(c *gin.Context) {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
 			Message: fmt.Sprintf("inventory %s is not exists", id),
+		})
+	} else if err == core.ErrReferencrNotExists {
+		c.JSON(http.StatusNotFound, ErrorRes{
+			Code:    "item_not_Found",
+			Message: fmt.Sprintf("location %s or item_type %s are not exists", inventoryInput.Location, inventoryInput.ItemType),
 		})
 	} else if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{

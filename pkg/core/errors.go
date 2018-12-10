@@ -19,5 +19,6 @@ package core
 import "errors"
 
 var (
-	ErrRecordNotExists = errors.New("record not exists")
+	ErrRecordNotExists    = errors.New("record not exists")
+	ErrReferencrNotExists = errors.New("reference record not exist")
 )
