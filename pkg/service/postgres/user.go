@@ -132,7 +132,7 @@ func (s *UserService) Update(ctx context.Context, id string, input *core.User) (
 	}
 	defer tx.Rollback()
 
-	const query = `UPDATE "user" SET name = $2, updated_at = current_timestamp WHERE id = $1`
+	const query = `UPDATE "user" SET name = $2, updated_at = current_timestamp WHERE id = $1 RETURNING id, name`
 	row := tx.QueryRowContext(ctx, query, uuid.NewV4(), input.Name)
 	user := new(core.User)
 	if err = row.Scan(&user.Id, &user.Name); err == sql.ErrNoRows {
