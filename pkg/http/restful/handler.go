@@ -67,9 +67,9 @@ func CreateHandler(ctx context.Context) http.Handler {
 
 		inventoryPath := "/inventory"
 		idPath := inventoryPath + "/:id"
-		v1.GET(inventoryPath+"/location/:locationId", inventoryHandler.locationList)
-		v1.GET(inventoryPath+"/itemType/:itemTypeId", inventoryHandler.itemTypeList)
 		v1.GET(idPath, inventoryHandler.get)
+		v1.GET("/location/:id/inventory", inventoryHandler.locationList)
+		v1.GET("/itemType/:id/inventory", inventoryHandler.itemTypeList)
 		v1.POST(inventoryPath, inventoryHandler.create)
 		v1.PATCH(idPath, inventoryHandler.update)
 		v1.DELETE(idPath, inventoryHandler.delete)
