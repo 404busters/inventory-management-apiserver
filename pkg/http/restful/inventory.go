@@ -27,7 +27,7 @@ type inventoryHandler struct {
 }
 
 func (h *inventoryHandler) locationList(c *gin.Context) {
-	locationId := c.Param("locationId")
+	locationId := c.Param("id")
 	inventories, err := h.Service.LocationList(c, locationId)
 
 	if err == core.ErrReferencrNotExists {
@@ -48,13 +48,13 @@ func (h *inventoryHandler) locationList(c *gin.Context) {
 }
 
 func (h *inventoryHandler) itemTypeList(c *gin.Context) {
-	itemTypeId := c.Param("itemTypeId")
+	itemTypeId := c.Param("id")
 	inventories, err := h.Service.ItemTypeList(c, itemTypeId)
 
 	if err == core.ErrReferencrNotExists {
 		c.JSON(http.StatusNotFound, ErrorRes{
 			Code:    "item_not_Found",
-			Message: fmt.Sprintf("location˝ %s are not exists", itemTypeId),
+			Message: fmt.Sprintf("itemtype˝ %s are not exists", itemTypeId),
 		})
 	} else if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
