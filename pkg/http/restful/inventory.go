@@ -48,7 +48,7 @@ func (h *inventoryHandler) locationList(c *gin.Context) {
 }
 
 func (h *inventoryHandler) itemTypeList(c *gin.Context) {
-	itemTypeId := c.Param("itemType")
+	itemTypeId := c.Param("itemTypeId")
 	inventories, err := h.Service.ItemTypeList(c, itemTypeId)
 
 	if err == core.ErrReferencrNotExists {
