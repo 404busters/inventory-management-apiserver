@@ -60,5 +60,20 @@ func CreateHandler(ctx context.Context) http.Handler {
 		v1.DELETE(idPath, handler.delete)
 	}
 
+	{
+		inventoryHandler := inventoryHandler{
+			Service: inject.GetInventoryServiceFromContext(ctx),
+		}
+
+		inventoryPath := "/inventory"
+		idPath := inventoryPath + "/:id"
+		v1.GET(idPath, inventoryHandler.get)
+		v1.GET("/location/:id/inventory", inventoryHandler.locationList)
+		v1.GET("/itemType/:id/inventory", inventoryHandler.itemTypeList)
+		v1.POST(inventoryPath, inventoryHandler.create)
+		v1.PATCH(idPath, inventoryHandler.update)
+		v1.DELETE(idPath, inventoryHandler.delete)
+	}
+
 	return app
 }

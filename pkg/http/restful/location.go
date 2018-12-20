@@ -17,7 +17,6 @@
 package restful
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -46,16 +45,17 @@ func (h *locationHandler) list(c *gin.Context) {
 func (h *locationHandler) get(c *gin.Context) {
 	id := c.Param("id")
 	location, err := h.Service.Get(c, id)
-	if err == sql.ErrNoRows {
-		c.JSON(http.StatusNotFound, ErrorRes{
-			Code:    "item_not_Found",
-			Message: err.Error(),
-		})
-	} else if err != nil {
+	if err != nil {
 		c.JSON(http.StatusServiceUnavailable, ErrorRes{
 			Code:    "database_error",
 			Message: err.Error(),
 		})
+	} else if location == nil {
+		c.JSON(http.StatusNotFound, ErrorRes{
+			Code:    "item_not_found",
+			Message: fmt.Sprintf("item type %s is not exists", id),
+		})
+		return
 	} else {
 		c.JSON(http.StatusOK, ApiRes{
 			Data: location,

@@ -276,10 +276,10 @@ paths:
           description: Server Error
           schema:
             $ref : "#/definitions/ErrorResponse"
-  /location/{locationId}/inventory:
+  /inventory/location/{locationId}:
     get:
       tags:
-        - "location"
+        - "Inventory"
       produces:
         - "application/json"
       parameters:
@@ -443,10 +443,10 @@ paths:
           description: Server Error
           schema:
             $ref : "#/definitions/ErrorResponse"
-  /itemType/{itemId}/inventory:
+  /inventory/itemType/{itemId}:
     get:
       tags:
-        - "ItemType"
+        - "Inventory"
       produces:
         - "application/json"
       parameters:
