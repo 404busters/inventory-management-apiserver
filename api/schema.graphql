@@ -1,0 +1,65 @@
+type Location {
+    id: String!
+    name: String!
+    inventory: [Inventory!]!
+}
+
+type ItemType {
+    id: String!
+    name: String!
+    description: String!
+    inventory: [Inventory!]!
+}
+
+enum InventoryStatus {
+    STOCK
+    IN_USE
+    REPAIR
+    TRANSPORT
+}
+
+type Inventory {
+    id: String!
+    itemType: ItemType!
+    location: Location!
+    status: InventroyStatus!
+    transports: [Transport!]
+}
+
+type PresetItemType {
+    itemType: ItemType!
+    count: Int!
+}
+
+type Preset {
+    id: String!
+    displayName: String!
+    itemTypes: PresetItemType!
+}
+
+enum TransportEventType {
+    CHECK_IN
+    CHECK_OUT
+}
+
+type Transport {
+    id: String!
+    personInCharge: User!
+    location: Location!
+    eventType: TransportEventType!
+    notes: String
+}
+
+type User {
+    id: String!
+    name: String!
+    transports: [Transport!]
+}
+
+type Query {
+    location(id: String): [Location!]!
+    itemType(id: String): [ItemType!]!
+    user(id: String): [User!]!
+    preset(id: String): [Preset!]!
+    tranposrt(id: String): [Transport!]!
+}
