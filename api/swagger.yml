@@ -14,6 +14,7 @@ tags:
   - name: "User"
   - name: "Transport Log"
   - name: Preset
+  - name: "Checkin / Checkout"
 schemes:
   - "http"
 paths:
@@ -571,7 +572,7 @@ paths:
         - application/json
       responses:
         200:
-          description: Successful list user
+          description: Successful list Transport Log
           schema:
             type: object
             properties:
@@ -583,7 +584,54 @@ paths:
           description: Server Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  
+  /checkin:
+    post:
+      tags:
+        - "Checkin / Checkout"
+      parameters:
+        - in: body
+          name: checkInOutInput
+          schema:
+            $ref: "#/definitions/checkInOutInput"
+      responses:
+        201:
+          description: Successful Checkin
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: "string"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /checkOut:
+    post:
+      tags:
+        - "Checkin / Checkout"
+      parameters:
+        - in: body
+          name: checkInOutInput
+          schema:
+            $ref: "#/definitions/checkInOutInput"
+      responses:
+        201:
+          description: Successful Checkout
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: "string"          
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /user:
     get:
       tags:
@@ -827,6 +875,25 @@ definitions:
   TransportLog:
     type: object
     required:
+      - id
+      - personInCharge
+      - location
+      - eventType
+      - note
+    properties:
+      id:
+        type: "string"
+      personInCharge:
+        type: "string"
+      location:
+        type: "string"
+      eventType:
+        type: "string"
+      note:
+        type: "string"
+  checkInOutInput:
+    type: object
+    required:
       - personInCharge
       - location
       - eventType
@@ -839,7 +906,7 @@ definitions:
       eventType:
         type: "string"
       note:
-        type: "string"
+        type: "string"    
   Error422Response:
     type: "object"
     properties:
