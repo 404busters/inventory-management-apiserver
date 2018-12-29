@@ -53,7 +53,13 @@ func (s *InventoryService) ItemTypeList(ctx context.Context, itemTypeId string) 
 		return nil, core.ErrReferencrNotExists
 	}
 
-	rows, err := conn.QueryContext(ctx, "SELECT id, item_type, last_seen_location, status, last_seen_time FROM inventory WHERE item_type = $1 and deleted_at IS NOT NULL", itemTypeId)
+	rows, err := conn.QueryContext(ctx, "SELECT id, item_type, last_seen_location, status, last_seen_time FROM inventory WHERE item_type = $1 and deleted_at IS NULL", itemTypeId)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		s.Logger.WithError(err).Error('Fetch inventory by item_type')
+		return nil, err
+	}
 	defer rows.Close()
 
 	var inventories = make([]core.Inventory, 0)
@@ -97,7 +103,13 @@ func (s *InventoryService) LocationList(ctx context.Context, locationId string) 
 		return nil, core.ErrReferencrNotExists
 	}
 
-	rows, err := conn.QueryContext(ctx, "SELECT id, item_type, last_seen_location, status, last_seen_time FROM inventory WHERE last_seen_location = $1 and deleted_at IS NOT NULL", locationId)
+	rows, err := conn.QueryContext(ctx, "SELECT id, item_type, last_seen_location, status, last_seen_time FROM inventory WHERE last_seen_location = $1 and deleted_at IS NULL", locationId)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		s.Logger.WithError(err).Error("Fetch inventory by location")
+		return nil, err
+	}
 	defer rows.Close()
 
 	var inventories = make([]core.Inventory, 0)
