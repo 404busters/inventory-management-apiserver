@@ -1,0 +1,19 @@
+image: golang:1.11
+
+cache:
+  paths:
+    - vendor
+
+stages:
+  - setup
+  - test
+
+install:
+  stage: setup
+  script:
+    - GO111MODULE=on go mod vendor
+
+vet:
+  stage: test
+  script:
+    - go vet ./...
