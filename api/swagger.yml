@@ -8,17 +8,18 @@ info:
 host: "localhost:8080"
 basePath: "/api/v1"
 tags:
-  - name: "inventory"
-  - name: "location"
+  - name: "Inventory"
+  - name: "Location"
   - name: "ItemType"
-  - name: "user"
+  - name: "User"
+  - name: "Transport Log"
 schemes:
   - "http"
 paths:
   /inventory:
     post:
       tags:
-        - "inventory"
+        - "Inventory"
       produces:
         - "application/json"
       consumes:
@@ -51,7 +52,7 @@ paths:
   /inventory/{id}:
     get:
       tags:
-        - "inventory"
+        - "Inventory"
       produces:
         - "application/json"
       parameters:
@@ -81,7 +82,7 @@ paths:
             $ref : "#/definitions/ErrorResponse"
     delete:
       tags:
-        - "inventory"
+        - "Inventory"
       produces:
         - "application/json"
       parameters:
@@ -106,7 +107,7 @@ paths:
             $ref : "#/definitions/ErrorResponse"
     patch:
       tags:
-        - "inventory"
+        - "Inventory"
       produces:
         - "application/json"
       parameters:
@@ -137,7 +138,7 @@ paths:
   /location:
     get:
       tags:
-        - "location"
+        - "Location"
       produces:
         - "application/json"
       responses:
@@ -160,7 +161,7 @@ paths:
             $ref : "#/definitions/ErrorResponse"
     post:
       tags:
-        - "location"
+        - "Location"
       produces:
         - "application/json"
       consumes:
@@ -189,7 +190,7 @@ paths:
   /location/{id}:
     get:
       tags:
-        - "location"
+        - "Location"
       produces:
         - "application/json"
       parameters:
@@ -219,7 +220,7 @@ paths:
             $ref : "#/definitions/ErrorResponse"
     patch:
       tags:
-        - "location"
+        - "Location"
       produces:
         - "application/json"
       parameters:
@@ -253,7 +254,7 @@ paths:
             $ref : "#/definitions/ErrorResponse"
     delete:
       tags:
-        - "location"
+        - "Location"
       produces:
         - "application/json"
       parameters:
@@ -472,10 +473,31 @@ paths:
           description: Server Error
           schema:
             $ref : "#/definitions/ErrorResponse"
+  /transportLog:
+    get:
+      tags:
+        - Transport Log
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful list user
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/TransportLog"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  
   /user:
     get:
       tags:
-        - user
+        - User
       produces:
         - application/json
       responses:
@@ -494,7 +516,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     post:
       tags:
-        - user
+        - User
       parameters:
         - in: body
           name: User
@@ -522,7 +544,7 @@ paths:
   /user/{user}:
     get:
       tags:
-        - user
+        - User
       parameters:
         - name: user
           in: path
@@ -548,7 +570,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     patch:
       tags:
-        - user
+        - User
       parameters:
         - name: user
           in: path
@@ -574,7 +596,7 @@ paths:
             $ref: "#/definitions/ErrorResponse"
     delete:
       tags:
-        - user
+        - User
       parameters:
         - name: user
           in: path
@@ -685,6 +707,22 @@ definitions:
     properties:
       name:
         type: string
+  TransportLog:
+    type: object
+    required:
+      - personInCharge
+      - location
+      - eventType
+      - note
+    properties:
+      personInCharge:
+        type: "string"
+      location:
+        type: "string"
+      eventType:
+        type: "string"
+      note:
+        type: "string"
   Error422Response:
     type: "object"
     properties:
