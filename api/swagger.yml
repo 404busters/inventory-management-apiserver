@@ -498,6 +498,11 @@ paths:
     post:
       tags:
         - "Checkin / Checkout"
+      parameters:
+        - in: body
+          name: checkInOutInput
+          schema:
+            $ref: "#/definitions/checkInOutInput"
       responses:
         201:
           description: Successful Checkin
@@ -517,6 +522,11 @@ paths:
     post:
       tags:
         - "Checkin / Checkout"
+      parameters:
+        - in: body
+          name: checkInOutInput
+          schema:
+            $ref: "#/definitions/checkInOutInput"
       responses:
         201:
           description: Successful Checkout
@@ -764,6 +774,22 @@ definitions:
         type: "string"
       note:
         type: "string"
+  checkInOutInput:
+    type: object
+    required:
+      - personInCharge
+      - location
+      - eventType
+      - note
+    properties:
+      personInCharge:
+        type: "string"
+      location:
+        type: "string"
+      eventType:
+        type: "string"
+      note:
+        type: "string"    
   Error422Response:
     type: "object"
     properties:
