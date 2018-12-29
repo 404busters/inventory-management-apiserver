@@ -1,0 +1,9 @@
+.git
+.idea
+.vscode
+database
+deployments
+tools
+api
+assets
+build
