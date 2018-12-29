@@ -48,6 +48,7 @@ type Transport {
     location: Location!
     eventType: TransportEventType!
     notes: String
+    inventory: [Inventory!]!
 }
 
 type User {
