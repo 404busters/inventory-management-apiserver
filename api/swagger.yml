@@ -13,6 +13,7 @@ tags:
   - name: "ItemType"
   - name: "User"
   - name: "Transport Log"
+  - name: Preset
 schemes:
   - "http"
 paths:
@@ -473,6 +474,95 @@ paths:
           description: Server Error
           schema:
             $ref : "#/definitions/ErrorResponse"
+  /preset:
+    get:
+      tags:
+        - Preset
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success List Preset
+          schema:
+            type: object
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/Preset"
+        503:
+          description: Server Error
+          schema:
+            $ref : "#/definitions/ErrorResponse"
+    post:
+      tags:
+        - Preset
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: Preset
+          schema:
+            $ref: "#/definitions/PresetInput"
+      responses:
+        200:
+          description: Success Create
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "#/definitions/Preset"
+        422:
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error422Response"
+  /preset/{presetId}:
+    patch:
+      tags:
+        - Preset
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: presetId
+          type: string
+          required: true
+        - in: body
+          name: Preset
+          schema:
+            $ref: "#/definitions/PresetInput"
+      responses:
+        200:
+          description: Successful Update Preset
+          schema:
+            type: object
+            properties:
+              data:
+                $ref: "#/definitions/Preset"
+        404:
+          description: Preset not exists
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+        422:
+          description: Invalid Input
+          schema:
+            $ref: "#/definitions/Error422Response"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    delete:
+      tags:
+        - Preset
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful delete preset
   /transportLog:
     get:
       tags:
@@ -621,6 +711,33 @@ paths:
             $ref: "#/definitions/ErrorResponse"
 
 definitions:
+  PresetItemType:
+    type: object
+    properties:
+      id:
+        type: string
+      count:
+        type: integer
+  Preset:
+    type: object
+    properties:
+      id:
+        type: string
+      display_name:
+        type: string
+      item_types:
+        type: array
+        items:
+          $ref: "#/definitions/PresetItemType"
+  PresetInput:
+    type: object
+      properties:
+        display_name:
+          type: string
+        item_types:
+          type: array
+          items:
+            $ref: "#/definitions/PresetItemType"
   Inventory:
     type: "object"
     properties:
