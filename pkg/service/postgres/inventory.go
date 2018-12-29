@@ -57,7 +57,7 @@ func (s *InventoryService) ItemTypeList(ctx context.Context, itemTypeId string) 
 	if err == sql.ErrNoRows {
 		return nil, nil
 	} else if err != nil {
-		s.Logger.WithError(err).Error('Fetch inventory by item_type')
+		s.Logger.WithError(err).Error("Fetch inventory by item_type")
 		return nil, err
 	}
 	defer rows.Close()
