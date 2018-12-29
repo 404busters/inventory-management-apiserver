@@ -13,6 +13,7 @@ tags:
   - name: "ItemType"
   - name: "User"
   - name: "Transport Log"
+  - name: "Checkin / Checkout"
 schemes:
   - "http"
 paths:
@@ -481,7 +482,7 @@ paths:
         - application/json
       responses:
         200:
-          description: Successful list user
+          description: Successful list Transport Log
           schema:
             type: object
             properties:
@@ -493,7 +494,44 @@ paths:
           description: Server Error
           schema:
             $ref: "#/definitions/ErrorResponse"
-  
+  /checkin:
+    post:
+      tags:
+        - "Checkin / Checkout"
+      responses:
+        201:
+          description: Successful Checkin
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: "string"
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /checkOut:
+    post:
+      tags:
+        - "Checkin / Checkout"
+      responses:
+        201:
+          description: Successful Checkout
+          schema:
+            type: object
+            properties:
+              data:
+                type: object
+                properties:
+                  id:
+                    type: "string"          
+        503:
+          description: Server Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /user:
     get:
       tags:
@@ -710,11 +748,14 @@ definitions:
   TransportLog:
     type: object
     required:
+      - id
       - personInCharge
       - location
       - eventType
       - note
     properties:
+      id:
+        type: "string"
       personInCharge:
         type: "string"
       location:
