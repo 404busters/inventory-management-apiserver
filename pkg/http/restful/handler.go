@@ -75,5 +75,12 @@ func CreateHandler(ctx context.Context) http.Handler {
 		v1.DELETE(idPath, authMiddleware, inventoryHandler.delete)
 	}
 
+	v1.POST("/auth", authMiddleware, func(c *gin.Context) {
+		w := c.Writer
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"auth": "ok"}`))
+	})
+
 	return app
 }
