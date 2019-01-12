@@ -55,9 +55,9 @@ func CreateHandler(ctx context.Context) http.Handler {
 		idPath := regularPath + "/:id"
 		v1.GET(regularPath, handler.list)
 		v1.GET(idPath, handler.get)
-		v1.POST(regularPath, handler.create)
-		v1.PATCH(idPath, handler.update)
-		v1.DELETE(idPath, handler.delete)
+		v1.POST(regularPath, authMiddleware, handler.create)
+		v1.PATCH(idPath, authMiddleware, handler.update)
+		v1.DELETE(idPath, authMiddleware, handler.delete)
 	}
 
 	{
@@ -70,10 +70,17 @@ func CreateHandler(ctx context.Context) http.Handler {
 		v1.GET("/location/:id/inventory", inventoryHandler.locationList)
 		v1.GET("/itemType/:id/inventory", inventoryHandler.itemTypeList)
 		v1.GET(idPath, inventoryHandler.get)
-		v1.POST(inventoryPath, inventoryHandler.create)
-		v1.PATCH(idPath, inventoryHandler.update)
-		v1.DELETE(idPath, inventoryHandler.delete)
+		v1.POST(inventoryPath, authMiddleware, inventoryHandler.create)
+		v1.PATCH(idPath, authMiddleware, inventoryHandler.update)
+		v1.DELETE(idPath, authMiddleware, inventoryHandler.delete)
 	}
+
+	v1.POST("/auth", authMiddleware, func(c *gin.Context) {
+		w := c.Writer
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"auth": "ok"}`))
+	})
 
 	return app
 }
