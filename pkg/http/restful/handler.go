@@ -75,6 +75,16 @@ func CreateHandler(ctx context.Context) http.Handler {
 		v1.DELETE(idPath, authMiddleware, inventoryHandler.delete)
 	}
 
+	{
+		transportHandler := transportHandler{
+			Service: inject.GetTransportServiceFromContext(ctx),
+		}
+
+		v1.GET("/transportLog", transportHandler.list)
+		v1.POST("/checkin", authMiddleware, transportHandler.checkIn)
+		v1.POST("/checkOut", authMiddleware, transportHandler.checkOut)
+	}
+
 	v1.POST("/auth", authMiddleware, func(c *gin.Context) {
 		w := c.Writer
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
